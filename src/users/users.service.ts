@@ -3,22 +3,22 @@ import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  private readonly users: any[] = [
+  private readonly users: User[] = [
     {
       id: '1',
-      username: 'username1',
+      email: 'email1',
       password: 'pwd1',
       roles: 'Admin',
     },
     {
       id: '2',
-      username: 'username2',
+      email: 'email2',
       password: 'pwd2',
       roles: 'Student',
     },
   ];
 
-  async findOne(username: string): Promise<any | undefined> {
-    return this.users.find((user) => user.username === username);
+  async findOne(email: string): Promise<any | undefined> {
+    return this.users.find((user) => user.email === email);
   }
 }

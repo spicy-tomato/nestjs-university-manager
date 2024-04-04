@@ -9,12 +9,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: `${process.env.JWT_SECRET}`,
-      // usernameField: 'email',
+      usernameField: 'email',
     });
   }
 
   async validate(payload: any) {
     console.log(payload);
-    return { username: payload.username, sub: payload.id };
+    return { email: payload.email, id: payload.id };
   }
 }
