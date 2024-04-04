@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [
+  private readonly users: any[] = [
     {
       id: '1',
       email: 'email1',
