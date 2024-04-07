@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
@@ -8,6 +8,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @IsEnum($Enums.Role)
-  role: $Enums.Role;
+  @IsEnum(Role)
+  role: Role;
 }

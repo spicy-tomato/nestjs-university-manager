@@ -3,7 +3,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { $Enums, Prisma } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { genSalt, hash } from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto';
@@ -12,8 +12,8 @@ import { CreateUserDto } from './dto';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userRole: $Enums.Role, data: CreateUserDto) {
-    const creatable: Partial<Record<$Enums.Role, $Enums.Role[]>> = {
+  async create(userRole: Role, data: CreateUserDto) {
+    const creatable: Partial<Record<Role, Role[]>> = {
       SystemAdmin: ['SystemAdmin', 'Admin'],
       Admin: ['Student', 'Teacher'],
     };

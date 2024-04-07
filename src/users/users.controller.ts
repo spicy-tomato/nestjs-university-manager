@@ -1,20 +1,17 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtUser } from '../common/decorators/params/auth-user.decorator';
-import { JwtAuthGuard } from '../common/guards';
-import { JwtPayload } from '../common/models';
+import { JwtUserDto } from '../common/dto';
 import { CreateUserDto } from './dto';
 import { UsersService } from './users.service';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(
-    @JwtUser() user: JwtPayload,
-    @Body() payload: CreateUserDto,
-  ) {
+  async create(@JwtUser() user: JwtUserDto, @Body() payload: CreateUserDto) {
     return this.usersService.create(user.role, payload);
   }
 }

@@ -76,8 +76,9 @@ model AcademicYear {
   id                String            @id @default(auto()) @map("_id") @db.ObjectId
   name              String            @unique
   code              String            @unique
-  startYear         Int
+  startYear         Int               @unique
   endYear           Int
+  isCurrent         Boolean
   managementClasses ManagementClass[]
 }
 

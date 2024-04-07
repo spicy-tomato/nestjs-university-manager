@@ -1,7 +1,7 @@
-import { $Enums } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 export type LocalPayload = {
   id: string;
   email: string;
-  role: $Enums.Role;
+  role: Role;
 };

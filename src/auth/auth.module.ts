@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
-  imports: [UsersModule, ],
+  imports: [UsersModule],
   providers: [AuthService, LocalStrategy],
   controllers: [AuthController],
   exports: [AuthService],

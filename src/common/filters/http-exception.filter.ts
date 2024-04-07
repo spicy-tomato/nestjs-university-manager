@@ -17,12 +17,17 @@ export class AllExceptionFilter implements ExceptionFilter {
     let httpStatus: number;
     let exceptionMessage = exception.message;
 
+    console.log(exception);
+
     httpStatus =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     switch (httpStatus) {
+      case HttpStatus.UNAUTHORIZED:
+        exceptionMessage = 'You have to login to perform this action';
+        break;
       case HttpStatus.FORBIDDEN:
         exceptionMessage = 'You are not authorize to perform this action';
         break;

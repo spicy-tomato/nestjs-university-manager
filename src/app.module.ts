@@ -3,12 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { AcademicYearsModule } from './academic-years/academic-years.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { JwtAuthGuard, RolesGuard } from './common/guards';
 import { PrismaModule } from './prisma';
-import { ProgramsModule } from './programs/programs.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -29,9 +29,9 @@ import { UsersModule } from './users/users.module';
     }),
     AuthModule,
     UsersModule,
-    ProgramsModule,
     PrismaModule,
     PassportModule,
+    AcademicYearsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,6 +1,6 @@
 import { createParamDecorator } from '@nestjs/common';
-import { JwtPayload } from '../../models';
+import { JwtUserDto } from '../../dto';
 
 export const JwtUser = createParamDecorator((_, req) => {
-  return req.args[0].user as JwtPayload;
+  return req.args[0].user as JwtUserDto;
 });
