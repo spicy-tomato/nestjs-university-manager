@@ -43,7 +43,7 @@ export class AcademicYearsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.academicYearsService.getById(id);
+    return this.academicYearsService.findById(id);
   }
 
   @Delete(':id')

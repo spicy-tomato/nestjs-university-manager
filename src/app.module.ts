@@ -10,6 +10,7 @@ import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { JwtAuthGuard, RolesGuard } from './common/guards';
 import { PrismaModule } from './prisma';
 import { UsersModule } from './users/users.module';
+import { ProgramsModule } from './programs/programs.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UsersModule } from './users/users.module';
     PrismaModule,
     PassportModule,
     AcademicYearsModule,
+    ProgramsModule,
   ],
   controllers: [AppController],
   providers: [

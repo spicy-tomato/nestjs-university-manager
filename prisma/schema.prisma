@@ -8,18 +8,12 @@ generator client {
 }
 
 model User {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  email           String    @unique
-  password        String
-  salt            String
-  role            Role
-  profile         Profile?
-  createdPrograms Program[] @relation(name: "UserCreatedBy")
-  deletedPrograms Program[] @relation(name: "UserDeletedBy")
-  createdCourses  Course[]  @relation(name: "UserCreatedBy")
-  deletedCourses  Course[]  @relation(name: "UserDeletedBy")
-
-  @@map("users")
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  email    String   @unique
+  password String
+  salt     String
+  role     Role
+  profile  Profile?
 }
 
 model Profile {
@@ -64,11 +58,7 @@ model Program {
   code                String                   @unique
   name                String                   @unique
   createdAt           DateTime                 @default(now())
-  createdBy           User?                    @relation(fields: [createdById], references: [id], name: "UserCreatedBy")
-  createdById         String?                  @db.ObjectId
-  deletedAt           DateTime
-  deletedBy           User?                    @relation(fields: [deletedById], references: [id], name: "UserDeletedBy")
-  deletedById         String?                  @db.ObjectId
+  deletedAt           DateTime?
   managementClasseses ManagementClassProgram[]
 }
 
@@ -96,11 +86,7 @@ model Course {
   code          String
   name          String
   createdAt     DateTime      @default(now())
-  createdBy     User?         @relation(fields: [createdById], references: [id], name: "UserCreatedBy")
-  createdById   String?       @db.ObjectId
-  deletedAt     DateTime
-  deletedBy     User?         @relation(fields: [deletedById], references: [id], name: "UserDeletedBy")
-  deletedById   String?       @db.ObjectId
+  deletedAt     DateTime?
   courseClasses CourseClass[]
 }
 

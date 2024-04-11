@@ -1,7 +1,8 @@
+import { AcademicYear } from '@prisma/client';
 import { HttpNotFoundException } from '../../common/exceptions';
 
-export class AcademicYearNotFoundException extends HttpNotFoundException {
+export class AcademicYearNotFoundException extends HttpNotFoundException<AcademicYear> {
   constructor(id: string) {
-    super('AcademicYear', id);
+    super('AcademicYear', id, 'id');
   }
 }

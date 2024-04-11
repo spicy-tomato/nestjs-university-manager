@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { Result } from '../dto';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -24,20 +25,21 @@ export class AllExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    switch (httpStatus) {
-      case HttpStatus.UNAUTHORIZED:
-        exceptionMessage = 'You have to login to perform this action';
-        break;
-      case HttpStatus.FORBIDDEN:
-        exceptionMessage = 'You are not authorize to perform this action';
-        break;
+    if (exception.error) {
+      switch (httpStatus) {
+        case HttpStatus.UNAUTHORIZED:
+          exceptionMessage = 'You have to login to perform this action';
+          break;
+        case HttpStatus.FORBIDDEN:
+          exceptionMessage = 'You are not authorize to perform this action';
+          break;
+      }
     }
 
-    const responseBody = {
-      statusCode: httpStatus,
+    const responseBody: Result = {
+      data: null,
+      success: false,
       message: exceptionMessage,
-      timestamp: new Date().toISOString(),
-      path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);

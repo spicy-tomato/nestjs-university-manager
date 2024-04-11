@@ -7,6 +7,7 @@ import {
 } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AllExceptionFilter } from './common/filters/http-exception.filter';
+import { ResponseInterceptor } from './common/interceptors';
 
 function setupSwagger(app: INestApplication<any>): void {
   const config = new DocumentBuilder().build();
@@ -24,6 +25,7 @@ async function bootstrap() {
 
   const httpAdapter = app.get(HttpAdapterHost) as HttpAdapterHost;
   app.useGlobalFilters(new AllExceptionFilter(httpAdapter));
+  app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(3000);

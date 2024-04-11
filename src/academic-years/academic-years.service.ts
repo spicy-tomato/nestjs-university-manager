@@ -15,7 +15,7 @@ export class AcademicYearsService {
     const { startYear } = data;
     const endYear = startYear + 1;
 
-    if (await this.getByStartYear(startYear)) {
+    if (await this.findByStartYear(startYear)) {
       throw new AcademicYearConflictException(startYear, 'startYear');
     }
 
@@ -41,7 +41,7 @@ export class AcademicYearsService {
   }
 
   async updateCurrent(id: string) {
-    if (!(await this.getById(id))) {
+    if (!(await this.findById(id))) {
       throw new AcademicYearNotFoundException(id);
     }
 
@@ -65,7 +65,7 @@ export class AcademicYearsService {
   }
 
   async remove(id: string) {
-    const existedItem = await this.getById(id);
+    const existedItem = await this.findById(id);
     if (!existedItem) {
       throw new AcademicYearNotFoundException(id);
     }
@@ -81,11 +81,11 @@ export class AcademicYearsService {
     });
   }
 
-  getById(id: string) {
+  findById(id: string) {
     return this.findOne({ id });
   }
 
-  getByStartYear(startYear: number) {
+  findByStartYear(startYear: number) {
     return this.findOne({ startYear });
   }
 

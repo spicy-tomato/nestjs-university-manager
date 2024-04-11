@@ -13,9 +13,12 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<LocalPayload> {
     const user = await this.usersService.findOne({ email });
-    const hashPassword = await hash(password, user.salt);
+    if (!user) {
+      return null;
+    }
 
-    if (user && user.password === hashPassword) {
+    const hashPassword = await hash(password, user.salt);
+    if (user.password === hashPassword) {
       const { password, salt, ...result } = user;
       return result;
     }

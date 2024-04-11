@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 
-export class HttpNotFoundException extends NotFoundException {
-  constructor(model: string, id: string) {
-    super(`${model} with ID ${id} does not exist`);
+export class HttpNotFoundException<T> extends NotFoundException {
+  constructor(model: string, fieldValue: T[keyof T], field: keyof T) {
+    super(`${model} with ${String(field)}='${fieldValue}' does not exist`);
   }
 }
