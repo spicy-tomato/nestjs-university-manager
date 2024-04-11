@@ -22,12 +22,19 @@ export class ProgramsService {
       data: {
         code: data.code,
         name: data.name,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        createdAt: true,
       },
     });
   }
 
   findById(id: string) {
-    return this.findOne({ id, deletedAt: null });
+    return this.findOne({ id });
   }
 
   findByCondition(q: FindProgramDto) {
@@ -35,8 +42,15 @@ export class ProgramsService {
       where: {
         code: { contains: q.code },
         name: { contains: q.name },
-        deletedAt: null
       },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        createdAt: true,
+        managementClasses: true,
+        courseIds: true
+      }
     });
   }
 

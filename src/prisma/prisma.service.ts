@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { createSoftDeleteExtension } from 'prisma-extension-soft-delete';
 
 function extendClient(base: PrismaClient) {
-  // Add as many as you'd like - no ugly types required!
   return base.$extends(
     createSoftDeleteExtension({
       models: {

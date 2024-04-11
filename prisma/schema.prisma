@@ -59,7 +59,9 @@ model Program {
   name                String                   @unique
   createdAt           DateTime                 @default(now())
   deletedAt           DateTime?
-  managementClasseses ManagementClassProgram[]
+  courses             Course[]                 @relation(fields: [courseIds], references: [id])
+  courseIds           String[]                 @db.ObjectId
+  managementClasses ManagementClassProgram[]
 }
 
 model AcademicYear {
@@ -87,6 +89,8 @@ model Course {
   name          String
   createdAt     DateTime      @default(now())
   deletedAt     DateTime?
+  programs      Program[]     @relation(fields: [programIds], references: [id])
+  programIds    String[]      @db.ObjectId
   courseClasses CourseClass[]
 }
 
