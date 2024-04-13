@@ -8,9 +8,10 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { JwtAuthGuard, RolesGuard } from './common/guards';
+import { CoursesModule } from './courses/courses.module';
 import { PrismaModule } from './prisma';
-import { UsersModule } from './users/users.module';
 import { ProgramsModule } from './programs/programs.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -28,12 +29,13 @@ import { ProgramsModule } from './programs/programs.module';
         };
       },
     }),
-    AuthModule,
-    UsersModule,
     PrismaModule,
     PassportModule,
     AcademicYearsModule,
+    AuthModule,
+    CoursesModule,
     ProgramsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [

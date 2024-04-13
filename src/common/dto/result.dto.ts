@@ -4,5 +4,5 @@ export class Result<T = null> {
   @ApiProperty()
   data: T;
   success: boolean;
-  message: string | null;
+  message: string[] | string | null;
 }

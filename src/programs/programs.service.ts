@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { differenceWith } from 'lodash';
 import { PrismaService } from '../prisma';
-import { CreateProgramDto } from './dto/create-program.dto';
-import { FindProgramDto } from './dto/find-program.dto';
-import { UpdateProgramDto } from './dto/update-program.dto';
+import {
+  AddCoursesDto,
+  CreateProgramDto,
+  FindProgramDto,
+  UpdateProgramDto,
+} from './dto';
 import {
   ProgramConflictException,
   ProgramNotFoundException,
@@ -48,16 +52,12 @@ export class ProgramsService {
         code: true,
         name: true,
         createdAt: true,
-        managementClasses: true,
-        courseIds: true
-      }
+      },
     });
   }
 
   async update(id: string, data: UpdateProgramDto) {
-    if (!(await this.findById(id))) {
-      throw new ProgramNotFoundException(id);
-    }
+    await this.validateExist(id);
 
     if (
       await this.prisma.program.findFirst({
@@ -83,16 +83,100 @@ export class ProgramsService {
   }
 
   async remove(id: string) {
-    if (!(await this.findById(id))) {
-      throw new ProgramNotFoundException(id);
-    }
+    await this.validateExist(id);
 
     return this.prisma.program.delete({
       where: { id },
     });
   }
 
-  private findOne(where: Prisma.ProgramWhereUniqueInput) {
-    return this.prisma.program.findUnique({ where });
+  async addCourses(programId: string, data: AddCoursesDto) {
+    const courseIds = data.courses;
+
+    const program = await this.prisma.program.findUnique({
+      where: { id: programId },
+      select: {
+        courses: {
+          select: {
+            id: true,
+            programIds: true,
+          },
+        },
+      },
+    });
+    if (!program) {
+      throw new ProgramNotFoundException(programId);
+    }
+
+    const toRemoveProgramCourses = differenceWith(
+      program.courses,
+      courseIds,
+      (oldCourse, newCourseId) => oldCourse.id === newCourseId,
+    );
+
+    const toAddProgramCourseIds = differenceWith(
+      courseIds,
+      program.courses,
+      (newCourseId, oldCourse) => oldCourse.id === newCourseId,
+    );
+
+    await this.prisma.$transaction(async (tx) => {
+      await Promise.all(
+        toRemoveProgramCourses.map((course) =>
+          tx.course.update({
+            where: { id: course.id },
+            select: null,
+            data: {
+              programIds: course.programIds.filter((pid) => pid !== programId),
+            },
+          }),
+        ),
+      );
+
+      await tx.program.update({
+        where: { id: programId },
+        select: null,
+        data: { courseIds },
+      });
+
+      await Promise.all(
+        toAddProgramCourseIds.map((courseId) =>
+          tx.course.update({
+            where: { id: courseId },
+            data: {
+              programIds: { push: programId },
+            },
+          }),
+        ),
+      );
+    });
+
+    return await this.findById(programId);
+  }
+
+  private async findOne(where: Prisma.ProgramWhereUniqueInput) {
+    return this.prisma.program.findUnique({
+      where,
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        createdAt: true,
+        courses: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+          },
+        },
+        managementClasses: true,
+      },
+    });
+  }
+
+  private async validateExist(id: string): Promise<void> {
+    if (!(await this.findById(id))) {
+      throw new ProgramNotFoundException(id);
+    }
   }
 }

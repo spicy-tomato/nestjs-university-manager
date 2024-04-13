@@ -1,25 +1,30 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
+import { Roles } from '../common/decorators';
+import {
+  AddCoursesDto,
+  CreateProgramDto,
+  FindProgramDto,
+  UpdateProgramDto,
+} from './dto';
 import { ProgramsService } from './programs.service';
-import { CreateProgramDto } from './dto/create-program.dto';
-import { UpdateProgramDto } from './dto/update-program.dto';
-import { FindProgramDto } from './dto/find-program.dto';
 
 @Controller('programs')
 export class ProgramsController {
   constructor(private readonly programsService: ProgramsService) {}
 
   @Post()
-  create(@Body() createProgramDto: CreateProgramDto) {
-    return this.programsService.create(createProgramDto);
+  @Roles(['Admin'])
+  create(@Body() data: CreateProgramDto) {
+    return this.programsService.create(data);
   }
 
   @Get()
@@ -33,12 +38,20 @@ export class ProgramsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProgramDto: UpdateProgramDto) {
-    return this.programsService.update(id, updateProgramDto);
+  @Roles(['Admin'])
+  update(@Param('id') id: string, @Body() data: UpdateProgramDto) {
+    return this.programsService.update(id, data);
   }
 
   @Delete(':id')
+  @Roles(['Admin'])
   remove(@Param('id') id: string) {
     return this.programsService.remove(id);
+  }
+
+  @Patch(':id/courses')
+  @Roles(['Admin'])
+  addCourses(@Param('id') id: string, @Body() data: AddCoursesDto) {
+    return this.programsService.addCourses(id, data);
   }
 }

@@ -54,13 +54,13 @@ model Student {
 }
 
 model Program {
-  id                  String                   @id @default(auto()) @map("_id") @db.ObjectId
-  code                String                   @unique
-  name                String                   @unique
-  createdAt           DateTime                 @default(now())
-  deletedAt           DateTime?
-  courses             Course[]                 @relation(fields: [courseIds], references: [id])
-  courseIds           String[]                 @db.ObjectId
+  id                String                   @id @default(auto()) @map("_id") @db.ObjectId
+  code              String                   @unique
+  name              String                   @unique
+  createdAt         DateTime                 @default(now())
+  deletedAt         DateTime?
+  courses           Course[]                 @relation(fields: [courseIds], references: [id])
+  courseIds         String[]                 @db.ObjectId
   managementClasses ManagementClassProgram[]
 }
 
@@ -85,7 +85,7 @@ model ManagementClass {
 
 model Course {
   id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  code          String
+  code          String        @unique
   name          String
   createdAt     DateTime      @default(now())
   deletedAt     DateTime?
@@ -96,7 +96,7 @@ model Course {
 
 model CourseClass {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
-  code         String
+  code         String    @unique
   name         String
   startAt      DateTime
   endAt        DateTime

@@ -15,26 +15,24 @@ export class AllExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
-    let httpStatus: number;
-    let exceptionMessage = exception.message;
 
-    console.log(exception);
+    console.log(JSON.stringify(exception));
 
-    httpStatus =
+    let exceptionMessage: string | string[] =
+      exception.response?.message ??
+      exception.meta?.message ??
+      exception.message ??
+      'Internal server error';
+
+    exceptionMessage =
+      typeof exceptionMessage === 'string'
+        ? this.transformMessage(exceptionMessage)
+        : exceptionMessage.map((em) => this.transformMessage(em));
+
+    let httpStatus =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    if (exception.error) {
-      switch (httpStatus) {
-        case HttpStatus.UNAUTHORIZED:
-          exceptionMessage = 'You have to login to perform this action';
-          break;
-        case HttpStatus.FORBIDDEN:
-          exceptionMessage = 'You are not authorize to perform this action';
-          break;
-      }
-    }
 
     const responseBody: Result = {
       data: null,
@@ -43,5 +41,13 @@ export class AllExceptionFilter implements ExceptionFilter {
     };
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+  }
+
+  private transformMessage(message: string): string {
+    message = message[0].toUpperCase() + message.substring(1);
+    message = message.replaceAll(/id/gi, 'ID');
+    message = message.replaceAll(/mongodb/gi, 'MongoDB');
+
+    return message;
   }
 }

@@ -15,7 +15,6 @@ export class AuthController {
   @Post('login')
   @Public()
   @UseGuards(LocalAuthGuard)
-  // @ApiOperation({ summary: '', responses: {} })
   @ApiOkResponseGeneric({
     description: 'Login JWT token',
     type: AccessToken,
