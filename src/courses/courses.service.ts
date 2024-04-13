@@ -39,7 +39,7 @@ export class CoursesService {
     });
   }
 
-  findAll(q: FindCourseDto) {
+  findByCondition(q: FindCourseDto) {
     return this.prisma.course.findMany({
       where: {
         code: { contains: q.code },

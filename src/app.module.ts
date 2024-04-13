@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { JwtAuthGuard, RolesGuard } from './common/guards';
 import { CoursesModule } from './courses/courses.module';
+import { ManagementClassesModule } from './management-classes/management-classes.module';
 import { PrismaModule } from './prisma';
 import { ProgramsModule } from './programs/programs.module';
 import { UsersModule } from './users/users.module';
@@ -34,6 +35,7 @@ import { UsersModule } from './users/users.module';
     AcademicYearsModule,
     AuthModule,
     CoursesModule,
+    ManagementClassesModule,
     ProgramsModule,
     UsersModule,
   ],

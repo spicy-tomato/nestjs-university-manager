@@ -20,13 +20,13 @@ export class CoursesController {
 
   @Post()
   @Roles(['Admin'])
-  create(@Body() createCourseDto: CreateCourseDto) {
-    return this.coursesService.create(createCourseDto);
+  create(@Body() data: CreateCourseDto) {
+    return this.coursesService.create(data);
   }
 
   @Get()
-  findAll(@Query() q: FindCourseDto) {
-    return this.coursesService.findAll(q);
+  findByCondition(@Query() q: FindCourseDto) {
+    return this.coursesService.findByCondition(q);
   }
 
   @Get(':id')
@@ -36,8 +36,8 @@ export class CoursesController {
 
   @Patch(':id')
   @Roles(['Admin'])
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
-    return this.coursesService.update(id, updateCourseDto);
+  update(@Param('id') id: string, @Body() data: UpdateCourseDto) {
+    return this.coursesService.update(id, data);
   }
 
   @Delete(':id')
