@@ -36,11 +36,22 @@ export class UsersService {
         password: data.password,
         role: data.role,
         salt,
+        profile: data.profile && {
+          create: {
+            firstName: data.profile.firstName,
+            middleName: data.profile.middleName,
+            lastName: data.profile.lastName,
+            phoneNumber: data.profile.phoneNumber,
+            isMale: data.profile.isMale,
+            address: data.profile.address,
+          },
+        },
       },
       select: {
         id: true,
         email: true,
         role: true,
+        profile: true,
       },
     });
   }
@@ -49,7 +60,11 @@ export class UsersService {
     return `This action returns all programs`;
   }
 
-  findOne(where: Prisma.UserWhereUniqueInput) {
+  findById(id: string) {
+    return this.findOne({ id });
+  }
+
+  findOneWithPassword(where: Prisma.UserWhereUniqueInput) {
     return this.prisma.user.findUnique({ where });
   }
 
@@ -61,5 +76,15 @@ export class UsersService {
     return `This action removes a #${id} program`;
   }
 
-  private _createUser(data: CreateUserDto) {}
+  private findOne(where: Prisma.UserWhereUniqueInput) {
+    return this.prisma.user.findUnique({
+      where,
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        profile: true,
+      },
+    });
+  }
 }

@@ -21,9 +21,7 @@ model Profile {
   firstName   String
   middleName  String?
   lastName    String
-  email       String   @unique
   phoneNumber String?  @unique
-  password    String
   isMale      Boolean
   address     String?
   teacher     Teacher?

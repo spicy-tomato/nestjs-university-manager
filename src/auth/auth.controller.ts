@@ -1,8 +1,7 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { ApiOkResponseGeneric, Public } from '../common/decorators';
-import { JwtUserDto } from '../common/dto';
 import { LocalAuthGuard } from '../common/guards';
 import { AuthService } from './auth.service';
 import { AccessToken } from './models';
@@ -19,14 +18,7 @@ export class AuthController {
     description: 'Login JWT token',
     type: AccessToken,
   })
-  // @ApiBody({ type: LoginModel })
   async login(@Req() req: Request) {
     return this.authService.login(req.user);
-  }
-
-  @Get('profile')
-  @ApiOkResponseGeneric({ type: JwtUserDto })
-  getProfile(@Req() req: Request) {
-    return req.user;
   }
 }

@@ -45,7 +45,7 @@ export class AllExceptionFilter implements ExceptionFilter {
 
   private transformMessage(message: string): string {
     message = message[0].toUpperCase() + message.substring(1);
-    message = message.replaceAll(/id/gi, 'ID');
+    message = message.replaceAll(/(^id\b)|(\bid\b)|(\bid$)/gi, 'ID');
     message = message.replaceAll(/mongodb/gi, 'MongoDB');
 
     return message;

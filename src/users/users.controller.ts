@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Roles } from '../common/decorators';
+import { Request } from 'express';
+import { ApiOkResponseGeneric, Roles } from '../common/decorators';
 import { JwtUser } from '../common/decorators/params/auth-user.decorator';
 import { JwtUserDto } from '../common/dto';
 import { CreateUserDto } from './dto';
@@ -15,5 +16,11 @@ export class UsersController {
   @Roles(['SystemAdmin', 'Admin'])
   async create(@JwtUser() user: JwtUserDto, @Body() payload: CreateUserDto) {
     return this.usersService.create(user.role, payload);
+  }
+
+  @Get('me')
+  @ApiOkResponseGeneric({ type: JwtUserDto })
+  getProfile(@Req() req: Request) {
+    return this.usersService.findById((req.user as { id: string }).id);
   }
 }
