@@ -50,18 +50,19 @@ model Student {
   profileId         String          @unique @db.ObjectId
   managementClass   ManagementClass @relation(fields: [managementClassId], references: [id])
   managementClassId String          @db.ObjectId
-  courseClasses     CourseClass[]
+  courseClasses     CourseClass[]   @relation(fields: [courseClassIds], references: [id])
+  courseClassIds    String[]        @db.ObjectId
 }
 
 model Program {
-  id                String                   @id @default(auto()) @map("_id") @db.ObjectId
-  code              String                   @unique
-  name              String                   @unique
-  createdAt         DateTime                 @default(now())
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  code              String            @unique
+  name              String            @unique
+  createdAt         DateTime          @default(now())
   deletedAt         DateTime?
-  courses           Course[]                 @relation(fields: [courseIds], references: [id])
-  courseIds         String[]                 @db.ObjectId
-  managementClasses ManagementClassProgram[]
+  courses           Course[]          @relation(fields: [courseIds], references: [id])
+  courseIds         String[]          @db.ObjectId
+  managementClasses ManagementClass[]
 }
 
 model AcademicYear {
@@ -80,6 +81,8 @@ model ManagementClass {
   name           String
   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
   academicYearId String       @db.ObjectId
+  program        Program      @relation(fields: [programId], references: [id])
+  programId      String       @db.ObjectId
   students       Student[]
 }
 
@@ -99,50 +102,34 @@ model CourseClass {
   code         String    @unique
   name         String
   startAt      DateTime
-  endAt        DateTime
+  endAt        DateTime?
   sessionCount Int
   course       Course    @relation(fields: [courseId], references: [id])
   courseId     String    @db.ObjectId
   teacher      Teacher?  @relation(fields: [teacherId], references: [id])
   teacherId    String?   @db.ObjectId
-  student      Student?  @relation(fields: [studentId], references: [id])
-  studentId    String?   @db.ObjectId
+  students     Student[] @relation(fields: [studentIds], references: [id])
+  studentIds   String[]  @db.ObjectId
   sessions     Session[]
-  slots        Slot[]
+  isoSlots     Slot[]
 }
 
 model Session {
-  id                String      @id @default(auto()) @map("_id") @db.ObjectId
-  courseClass       CourseClass @relation(fields: [courseClassId], references: [id])
-  courseClassId     String      @db.ObjectId
-  slot              Slot        @relation(fields: [slotId], references: [id])
-  slotId            String      @db.ObjectId
-  substituteTeacher Teacher     @relation(fields: [teacherId], references: [id])
-  teacherId         String      @db.ObjectId
-}
-
-model Slot {
-  id                      String                 @id @default(auto()) @map("_id") @db.ObjectId
-  code                    String                 @unique
-  weekDay                 Int
-  daySlot                 Int
-  startAt                 DateTime
-  endAt                   DateTime
-  sessions                Session[]
-  courseClass             CourseClass?           @relation(fields: [courseClassId], references: [id])
-  courseClassId           String?                @db.ObjectId
-  OldChangeSessionRequest ChangeSessionRequest[] @relation(name: "OldSlot")
-  NewChangeSessionRequest ChangeSessionRequest[] @relation(name: "NewSlot")
+  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
+  courseClass         CourseClass @relation(fields: [courseClassId], references: [id])
+  courseClassId       String      @db.ObjectId
+  startAt             DateTime
+  endAt               DateTime
+  substituteTeacher   Teacher?    @relation(fields: [substituteTeacherId], references: [id])
+  substituteTeacherId String?     @db.ObjectId
 }
 
 model ChangeSessionRequest {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  oldTime     DateTime
-  oldSlot     Slot     @relation(fields: [oldSlotId], references: [id], name: "OldSlot")
-  oldSlotId   String   @db.ObjectId
-  newTime     DateTime
-  newSlot     Slot     @relation(fields: [newSlotId], references: [id], name: "NewSlot")
-  newSlotId   String   @db.ObjectId
+  oldStartAt  DateTime
+  oldEndAt    DateTime
+  newStartAt  DateTime
+  newEndAt    DateTime
   createdAt   DateTime @default(now())
   createdBy   Teacher  @relation(fields: [createdById], references: [id])
   createdById String   @db.ObjectId
@@ -162,9 +149,9 @@ enum ChangeSessionRequestStatus {
   Cancelled
 }
 
-type ManagementClassProgram {
-  managementClassId String
-  semester          Int
+type Slot {
+  startAt String
+  endAt   String
 }
 
 type Score {

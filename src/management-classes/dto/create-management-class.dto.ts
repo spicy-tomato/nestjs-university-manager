@@ -10,4 +10,8 @@ export class CreateManagementClassDto {
   @IsNotEmpty()
   @IsMongoId()
   academicYearId: string;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  programId: string;
 }

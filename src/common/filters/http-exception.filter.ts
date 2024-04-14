@@ -16,7 +16,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
 
-    console.log(JSON.stringify(exception));
+    console.log(exception);
 
     let exceptionMessage: string | string[] =
       exception.response?.message ??

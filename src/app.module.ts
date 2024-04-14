@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { JwtAuthGuard, RolesGuard } from './common/guards';
+import { CourseClassesModule } from './course-classes/course-classes.module';
 import { CoursesModule } from './courses/courses.module';
 import { ManagementClassesModule } from './management-classes/management-classes.module';
 import { PrismaModule } from './prisma';
@@ -34,6 +35,7 @@ import { UsersModule } from './users/users.module';
     PassportModule,
     AcademicYearsModule,
     AuthModule,
+    CourseClassesModule,
     CoursesModule,
     ManagementClassesModule,
     ProgramsModule,
