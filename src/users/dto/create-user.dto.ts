@@ -5,11 +5,26 @@ import {
   IsEmail,
   IsEnum,
   IsMobilePhone,
+  IsMongoId,
   IsNotEmpty,
   IsString,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
+
+export class CreateUserProfileTeacherDto {
+  @IsNotEmpty()
+  teacherId: string;
+}
+
+export class CreateUserProfileStudentDto {
+  @IsNotEmpty()
+  studentId: string;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  managementClassId: string;
+}
 
 export class CreateUserProfileDto {
   @IsString()
@@ -35,6 +50,14 @@ export class CreateUserProfileDto {
   @ValidateIf((o) => !!o.address)
   @IsString()
   address?: string | null;
+
+  @ValidateNested()
+  @Type(() => CreateUserProfileTeacherDto)
+  teacher?: CreateUserProfileTeacherDto;
+
+  @ValidateNested()
+  @Type(() => CreateUserProfileStudentDto)
+  student?: CreateUserProfileStudentDto;
 }
 
 export class CreateUserDto {
@@ -51,5 +74,5 @@ export class CreateUserDto {
 
   @ValidateNested()
   @Type(() => CreateUserProfileDto)
-  profile: CreateUserProfileDto;
+  profile?: CreateUserProfileDto;
 }

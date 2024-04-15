@@ -5,8 +5,15 @@ import {
 } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
 import { genSalt, hash } from 'bcrypt';
+import { ManagementClassNotFoundException } from '../management-classes/exceptions';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto';
+import {
+  CreateUserDto,
+  CreateUserProfileStudentDto,
+  CreateUserProfileTeacherDto,
+} from './dto';
+import { StudentConflictException } from './exceptions/student-conflict.exception';
+import { TeacherConflictException } from './exceptions/teacher-conflict.exception';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +31,12 @@ export class UsersService {
 
     if (await this.findOne({ email: data.email })) {
       throw new ConflictException('This email has been registered');
+    }
+
+    if (data.role === 'Student') {
+      await this.validateCreateStudent(data.profile.student);
+    } else if (data.role === 'Teacher') {
+      await this.validateCreateTeacher(data.profile.teacher);
     }
 
     const salt = await genSalt();
@@ -44,6 +57,21 @@ export class UsersService {
             phoneNumber: data.profile.phoneNumber,
             isMale: data.profile.isMale,
             address: data.profile.address,
+            student:
+              data.role === 'Student'
+                ? {
+                    create: {
+                      studentId: data.profile.student.studentId,
+                      managementClassId: data.profile.student.managementClassId,
+                    },
+                  }
+                : undefined,
+            teacher:
+              data.role === 'Teacher'
+                ? {
+                    create: { teacherId: data.profile.teacher.teacherId },
+                  }
+                : undefined,
           },
         },
       },
@@ -51,7 +79,19 @@ export class UsersService {
         id: true,
         email: true,
         role: true,
-        profile: true,
+        profile: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true,
+            phoneNumber: true,
+            isMale: true,
+            address: true,
+            student: !!data.profile.student,
+            teacher: !!data.profile.teacher,
+          },
+        },
       },
     });
   }
@@ -76,15 +116,103 @@ export class UsersService {
     return `This action removes a #${id} program`;
   }
 
-  private findOne(where: Prisma.UserWhereUniqueInput) {
+  private async findOne(where: Prisma.UserWhereUniqueInput) {
+    const role = (
+      await this.prisma.user.findUnique({
+        where,
+        select: { role: true },
+      })
+    )?.role;
+
+    if (!role) {
+      return null;
+    }
+
     return this.prisma.user.findUnique({
       where,
       select: {
         id: true,
         email: true,
         role: true,
-        profile: true,
+        profile: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true,
+            phoneNumber: true,
+            isMale: true,
+            address: true,
+            student:
+              role === 'Student'
+                ? {
+                    select: {
+                      id: true,
+                      studentId: true,
+                      managementClass: {
+                        select: {
+                          id: true,
+                          code: true,
+                          name: true,
+                          academicYear: {
+                            select: {
+                              id: true,
+                              name: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  }
+                : undefined,
+            teacher:
+              role === 'Teacher'
+                ? {
+                    select: {
+                      id: true,
+                      teacherId: true,
+                    },
+                  }
+                : undefined,
+          },
+        },
       },
     });
+  }
+
+  private async validateCreateStudent({
+    studentId,
+    managementClassId,
+  }: CreateUserProfileStudentDto) {
+    if (
+      await this.prisma.student.findFirst({
+        where: { studentId },
+        select: null,
+      })
+    ) {
+      throw new StudentConflictException(studentId, 'studentId');
+    }
+
+    if (
+      !(await this.prisma.managementClass.findFirst({
+        where: { id: managementClassId },
+        select: null,
+      }))
+    ) {
+      throw new ManagementClassNotFoundException(managementClassId);
+    }
+  }
+
+  private async validateCreateTeacher({
+    teacherId,
+  }: CreateUserProfileTeacherDto) {
+    if (
+      await this.prisma.teacher.findFirst({
+        where: { teacherId },
+        select: null,
+      })
+    ) {
+      throw new TeacherConflictException(teacherId, 'teacherId');
+    }
   }
 }

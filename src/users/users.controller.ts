@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { ApiOkResponseGeneric, Roles } from '../common/decorators';
 import { JwtUser } from '../common/decorators/params/auth-user.decorator';
 import { JwtUserDto } from '../common/dto';
+import { CreateUserDtoValidationPipe } from '../common/pipes';
 import { CreateUserDto } from './dto';
 import { UsersService } from './users.service';
 
@@ -14,7 +15,10 @@ export class UsersController {
 
   @Post()
   @Roles(['SystemAdmin', 'Admin'])
-  async create(@JwtUser() user: JwtUserDto, @Body() payload: CreateUserDto) {
+  async create(
+    @JwtUser() user: JwtUserDto,
+    @Body(new CreateUserDtoValidationPipe()) payload: CreateUserDto,
+  ) {
     return this.usersService.create(user.role, payload);
   }
 

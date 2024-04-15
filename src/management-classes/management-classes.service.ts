@@ -87,6 +87,13 @@ export class ManagementClassesService {
         id: true,
         code: true,
         name: true,
+        program: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+          },
+        },
         academicYear: {
           select: {
             id: true,
