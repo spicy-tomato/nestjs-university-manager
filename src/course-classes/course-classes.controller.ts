@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { Roles } from '../common/decorators';
@@ -14,6 +15,7 @@ import {
   CreateCourseClassDto,
   FindCourseClassDto,
   UpdateCourseClassDto,
+  UpdateCourseClassStudentsListDto,
 } from './dto';
 
 @Controller('course-classes')
@@ -51,5 +53,13 @@ export class CourseClassesController {
   @Get(':id/sessions')
   getSessions(@Param('id') id: string) {
     return this.courseClassesService.getSessions(id);
+  }
+
+  @Put(':id/students')
+  updateStudentsList(
+    @Param('id') id: string,
+    @Body() data: UpdateCourseClassStudentsListDto,
+  ) {
+    return this.courseClassesService.updateStudentsList(id, data);
   }
 }

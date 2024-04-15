@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import ObjectID from 'bson-objectid';
+import { difference } from 'lodash';
 import { Duration } from 'luxon';
 import { DateHelper } from '../common/helpers';
 import { CourseNotFoundException } from '../courses/exceptions';
@@ -9,8 +10,12 @@ import {
   CreateCourseClassDto,
   FindCourseClassDto,
   UpdateCourseClassDto,
+  UpdateCourseClassStudentsListDto,
 } from './dto';
-import { CourseClassConflictException } from './exceptions';
+import {
+  CourseClassConflictException,
+  CourseClassNotFoundException,
+} from './exceptions';
 
 @Injectable()
 export class CourseClassesService {
@@ -126,6 +131,68 @@ export class CourseClassesService {
     return sessions;
   }
 
+  async updateStudentsList(
+    id: string,
+    { studentIds }: UpdateCourseClassStudentsListDto,
+  ) {
+    const courseClass = await this.prisma.courseClass.findUnique({
+      where: { id },
+      select: { studentIds: true },
+    });
+    if (!courseClass) {
+      throw new CourseClassNotFoundException(id);
+    }
+
+    const studentIdsToAdd = difference(studentIds, courseClass.studentIds);
+    const studentIdsToRemove = difference(courseClass.studentIds, studentIds);
+
+    console.log(studentIdsToAdd);
+    console.log(studentIdsToRemove);
+
+    const studentsToRemove = await this.prisma.student.findMany({
+      where: {
+        id: { in: studentIdsToRemove },
+      },
+      select: {
+        id: true,
+        courseClassIds: true,
+      },
+    });
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.courseClass.update({
+        where: { id },
+        data: { studentIds },
+      });
+
+      await Promise.all(
+        studentIdsToAdd.map((sid) =>
+          tx.student.update({
+            where: { id: sid },
+            data: {
+              courseClassIds: { push: id },
+            },
+          }),
+        ),
+      );
+
+      await Promise.all(
+        studentsToRemove.map((student) =>
+          tx.student.update({
+            where: { id: student.id },
+            data: {
+              courseClassIds: student.courseClassIds.filter(
+                (cid) => cid !== id,
+              ),
+            },
+          }),
+        ),
+      );
+    });
+
+    return await this.findById(id);
+  }
+
   private async findOne(where: Prisma.CourseClassWhereUniqueInput) {
     return this.prisma.courseClass.findUnique({
       where,
@@ -145,10 +212,12 @@ export class CourseClassesService {
         isoSlots: true,
         students: {
           select: {
+            id: true,
+            studentId: true,
             profile: {
               select: {
-                id: true,
                 firstName: true,
+                middleName: true,
                 lastName: true,
               },
             },
