@@ -1,3 +1,3 @@
-export * from './params';
-export * from './requests';
-export * from './validators';
+export * from './method';
+export * from './param';
+export * from './property';

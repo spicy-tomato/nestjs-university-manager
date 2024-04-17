@@ -1,7 +1,7 @@
 import { Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { ApiOkResponseGeneric, Public } from '../common/decorators';
+import { ApiOkResponseGeneric, AutoSummarize, Public } from '../common/decorators';
 import { LocalAuthGuard } from '../common/guards';
 import { AuthService } from './auth.service';
 import { AccessToken } from './models';
@@ -12,6 +12,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @AutoSummarize()
   @Public()
   @UseGuards(LocalAuthGuard)
   @ApiOkResponseGeneric({

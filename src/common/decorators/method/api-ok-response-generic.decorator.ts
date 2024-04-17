@@ -1,5 +1,10 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiExtraModels,
+  ApiOkResponse,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { Result } from '../../dto';
 
 type ApiOkResponseGenericParams<T> = {
@@ -28,6 +33,8 @@ export const ApiOkResponseGeneric = <T extends Type<unknown>>({
               },
               message: {
                 type: 'string',
+                nullable: true,
+                example: null,
               },
             },
           },

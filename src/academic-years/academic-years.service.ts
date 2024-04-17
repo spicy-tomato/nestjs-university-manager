@@ -61,6 +61,14 @@ export class AcademicYearsService {
     return this.prisma.academicYear.update({
       data: { isCurrent: true },
       where: { id },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        startYear: true,
+        endYear: true,
+        isCurrent: true,
+      },
     });
   }
 
@@ -78,6 +86,14 @@ export class AcademicYearsService {
   getCurrent() {
     return this.prisma.academicYear.findFirst({
       where: { isCurrent: true },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        startYear: true,
+        endYear: true,
+        isCurrent: true,
+      },
     });
   }
 
@@ -90,6 +106,16 @@ export class AcademicYearsService {
   }
 
   private findOne(where: Prisma.AcademicYearWhereUniqueInput) {
-    return this.prisma.academicYear.findUnique({ where });
+    return this.prisma.academicYear.findUnique({
+      where,
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        startYear: true,
+        endYear: true,
+        isCurrent: true,
+      },
+    });
   }
 }
