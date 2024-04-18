@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import {
   ApiOkResponseGeneric,
+  AutoBearer,
   AutoSummarize,
   JwtUser,
   Roles,
@@ -14,6 +15,7 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 @ApiTags('users')
+@AutoBearer()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

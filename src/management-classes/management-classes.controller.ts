@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AutoSummarize, Roles } from '../common/decorators';
+import { AutoBearer, AutoSummarize, Roles } from '../common/decorators';
 import {
   CreateManagementClassDto,
   FindManagementClassDto,
@@ -19,6 +19,7 @@ import { ManagementClassesService } from './management-classes.service';
 
 @Controller('management-classes')
 @ApiTags('management-classes')
+@AutoBearer()
 export class ManagementClassesController {
   constructor(
     private readonly managementClassService: ManagementClassesService,

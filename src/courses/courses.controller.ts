@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AutoSummarize, Roles } from '../common/decorators';
+import { AutoBearer, AutoSummarize, Roles } from '../common/decorators';
 import { CoursesService } from './courses.service';
 import { FindCourseDto } from './dto';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -17,6 +17,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Controller('courses')
 @ApiTags('courses')
+@AutoBearer()
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 

@@ -8,13 +8,14 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import {
   ApiBadRequestResponseGeneric,
   ApiConflictResponseGeneric,
   ApiCreatedResponseGeneric,
   ApiNotFoundResponseGeneric,
   ApiOkResponseGeneric,
+  AutoBearer,
   AutoSummarize,
   Roles,
 } from '../common/decorators';
@@ -25,9 +26,11 @@ import {
   CreateAcademicYearDto,
   CreateAcademicYearResponseDto,
 } from './dto';
+import { FindAcademicYearInRangeQuery } from './queries';
 
 @ApiTags('academic-years')
 @Controller('academic-years')
+@AutoBearer()
 export class AcademicYearsController {
   constructor(private readonly academicYearsService: AcademicYearsService) {}
 
@@ -43,14 +46,10 @@ export class AcademicYearsController {
 
   @Get()
   @AutoSummarize()
-  @ApiQuery({ name: 'start' })
   @ApiOkResponseGeneric({ type: AcademicYearDto })
   findInRange(
     @Query(new ParseNullableIntPipe(['start', 'end']))
-    q: {
-      start: number;
-      end: number;
-    },
+    q: FindAcademicYearInRangeQuery,
   ) {
     return this.academicYearsService.findInRange(q.start, q.end);
   }

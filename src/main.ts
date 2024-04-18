@@ -10,12 +10,28 @@ import { AllExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors';
 
 function setupSwagger(app: INestApplication<any>): void {
-  const config = new DocumentBuilder().build();
+  const config = new DocumentBuilder()
+    .addBearerAuth(
+      {
+        name: 'Authorization',
+        scheme: 'Bearer',
+        in: 'Header',
+        type: 'http',
+      },
+      'accessToken',
+    )
+    .build();
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (_, methodKey) => methodKey,
   };
   const document = SwaggerModule.createDocument(app, config, options);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      apisSorter: 'alpha',
+      tagsSorter: 'alpha',
+      persistAuthorization: true,
+    },
+  });
 }
 
 async function bootstrap() {
