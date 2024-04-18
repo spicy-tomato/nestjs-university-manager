@@ -25,7 +25,7 @@ export class UsersService {
       Admin: ['Student', 'Teacher'],
     };
 
-    if (!creatable[userRole] || !creatable[userRole].includes(data.role)) {
+    if (!creatable[userRole] || !creatable[userRole]?.includes(data.role)) {
       throw new ForbiddenException();
     }
 
@@ -34,9 +34,9 @@ export class UsersService {
     }
 
     if (data.role === 'Student') {
-      await this.validateCreateStudent(data.profile.student);
+      await this.validateCreateStudent(data.profile!.student!);
     } else if (data.role === 'Teacher') {
-      await this.validateCreateTeacher(data.profile.teacher);
+      await this.validateCreateTeacher(data.profile!.teacher!);
     }
 
     const salt = await genSalt();
@@ -61,15 +61,16 @@ export class UsersService {
               data.role === 'Student'
                 ? {
                     create: {
-                      studentId: data.profile.student.studentId,
-                      managementClassId: data.profile.student.managementClassId,
+                      studentId: data.profile!.student!.studentId,
+                      managementClassId:
+                        data.profile!.student!.managementClassId,
                     },
                   }
                 : undefined,
             teacher:
               data.role === 'Teacher'
                 ? {
-                    create: { teacherId: data.profile.teacher.teacherId },
+                    create: { teacherId: data.profile!.teacher!.teacherId },
                   }
                 : undefined,
           },
@@ -88,15 +89,15 @@ export class UsersService {
             phoneNumber: true,
             isMale: true,
             address: true,
-            student: !!data.profile.student,
-            teacher: !!data.profile.teacher,
+            student: !!data.profile!.student,
+            teacher: !!data.profile!.teacher,
           },
         },
       },
     });
   }
 
-  findAll() {
+  findByCondition() {
     return `This action returns all programs`;
   }
 

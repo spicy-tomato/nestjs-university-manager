@@ -8,45 +8,30 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import {
-  ApiBadRequestResponseGeneric,
-  ApiConflictResponseGeneric,
-  ApiCreatedResponseGeneric,
-  ApiNotFoundResponseGeneric,
-  ApiOkResponseGeneric,
-  AutoBearer,
-  AutoSummarize,
-  Roles,
-} from '../common/decorators';
+import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
 import { ParseNullableIntPipe } from '../common/pipes';
 import { AcademicYearsService } from './academic-years.service';
-import {
-  AcademicYearDto,
-  CreateAcademicYearDto,
-  CreateAcademicYearResponseDto,
-} from './dto';
+import { AcademicYearDto, CreateAcademicYearDto } from './dto';
 import { FindAcademicYearInRangeQuery } from './queries';
 
-@ApiTags('academic-years')
 @Controller('academic-years')
-@AutoBearer()
+@SwaggerClass({ tag: 'academic-years' })
 export class AcademicYearsController {
   constructor(private readonly academicYearsService: AcademicYearsService) {}
 
   @Post()
   @Roles(['Admin'])
-  @AutoSummarize()
-  @ApiCreatedResponseGeneric({ type: CreateAcademicYearResponseDto })
-  @ApiBadRequestResponseGeneric()
-  @ApiConflictResponseGeneric()
+  @SwaggerMethod({
+    created: { type: AcademicYearDto },
+    badRequest: {},
+    conflict: {},
+  })
   create(@Body() data: CreateAcademicYearDto) {
     return this.academicYearsService.create(data);
   }
 
   @Get()
-  @AutoSummarize()
-  @ApiOkResponseGeneric({ type: AcademicYearDto })
+  @SwaggerMethod({ ok: { type: AcademicYearDto, isArray: true } })
   findInRange(
     @Query(new ParseNullableIntPipe(['start', 'end']))
     q: FindAcademicYearInRangeQuery,
@@ -55,34 +40,31 @@ export class AcademicYearsController {
   }
 
   @Get('current')
-  @AutoSummarize()
-  @ApiOkResponseGeneric({ type: AcademicYearDto })
+  @SwaggerMethod({ ok: { type: AcademicYearDto, isNullable: true } })
   getCurrent() {
     return this.academicYearsService.getCurrent();
   }
 
   @Get(':id')
-  @AutoSummarize()
-  @ApiOkResponseGeneric({ type: AcademicYearDto })
+  @SwaggerMethod({ ok: { type: AcademicYearDto, isNullable: true } })
   findOne(@Param('id') id: string) {
     return this.academicYearsService.findById(id);
   }
 
   @Delete(':id')
-  @AutoSummarize()
   @Roles(['Admin'])
-  @ApiOkResponseGeneric({ type: AcademicYearDto })
-  @ApiNotFoundResponseGeneric()
-  @ApiBadRequestResponseGeneric()
+  @SwaggerMethod({
+    ok: { type: AcademicYearDto },
+    badRequest: {},
+    notFound: {},
+  })
   remove(@Param('id') id: string) {
     return this.academicYearsService.remove(id);
   }
 
   @Put('current/:id')
-  @AutoSummarize()
   @Roles(['Admin'])
-  @ApiOkResponseGeneric({ type: AcademicYearDto })
-  @ApiNotFoundResponseGeneric()
+  @SwaggerMethod({ ok: { isBoolean: true }, notFound: {} })
   updateCurrent(@Param('id') id: string) {
     return this.academicYearsService.updateCurrent(id);
   }

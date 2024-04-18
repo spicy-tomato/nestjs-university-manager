@@ -1,22 +1,52 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiExtraModels,
-  ApiOkResponse,
-  getSchemaPath,
-} from '@nestjs/swagger';
+import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import { merge } from 'lodash';
 import { Result } from '../../dto';
 
-type ApiOkResponseGenericParams<T> = {
-  type: T;
+export type ApiOkResponseGenericParams<T extends string | Function = string> = {
+  type?: T;
   description?: string;
+  isArray?: boolean;
+  isBoolean?: boolean;
+  isNullable?: boolean;
 };
 
-export const ApiOkResponseGeneric = <T extends Type<unknown>>({
-  description,
-  type,
-}: ApiOkResponseGenericParams<T>) =>
-  applyDecorators(
+const defaultApiOkResponseGenericParams: Required<
+  Omit<ApiOkResponseGenericParams, 'description'>
+> = {
+  type: '',
+  isArray: false,
+  isBoolean: false,
+  isNullable: false,
+};
+
+export const ApiOkResponseGeneric = <T extends Type<unknown>>(
+  params: ApiOkResponseGenericParams<T>,
+) => {
+  const { type, description, isArray, isBoolean, isNullable } = merge(
+    {},
+    defaultApiOkResponseGenericParams,
+    params,
+  );
+
+  const data = isBoolean
+    ? { type: 'boolean' }
+    : isArray
+      ? {
+          type: 'array',
+          items: {
+            $ref: getSchemaPath(type),
+            nullable: isNullable,
+          },
+        }
+      : {
+          $ref: getSchemaPath(type),
+          nullable: isNullable,
+        };
+
+  // console.log(type, isArray);
+
+  return applyDecorators(
     ApiExtraModels(Result, type),
     ApiOkResponse({
       description,
@@ -25,9 +55,7 @@ export const ApiOkResponseGeneric = <T extends Type<unknown>>({
           { $ref: getSchemaPath(Result<T>) },
           {
             properties: {
-              data: {
-                $ref: getSchemaPath(type),
-              },
+              data,
               success: {
                 type: 'boolean',
               },
@@ -42,3 +70,4 @@ export const ApiOkResponseGeneric = <T extends Type<unknown>>({
       },
     }),
   );
+};

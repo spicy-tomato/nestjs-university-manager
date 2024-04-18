@@ -1,71 +1,62 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { AutoBearer, AutoSummarize, Roles } from '../common/decorators';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
 import { CourseClassesService } from './course-classes.service';
 import {
+  CourseClassDto,
   CreateCourseClassDto,
   FindCourseClassDto,
-  UpdateCourseClassDto,
   UpdateCourseClassStudentsListDto,
 } from './dto';
 
 @Controller('course-classes')
-@ApiTags('course-classes')
-@AutoBearer()
+@SwaggerClass({ tag: 'course-classes' })
 export class CourseClassesController {
   constructor(private readonly courseClassesService: CourseClassesService) {}
 
   @Post()
-  @AutoSummarize()
   @Roles(['Admin'])
+  @SwaggerMethod({
+    created: { type: CourseClassDto },
+    conflict: {},
+  })
   create(@Body() data: CreateCourseClassDto) {
     return this.courseClassesService.create(data);
   }
 
   @Get()
-  @AutoSummarize()
-  findAll(@Query() q: FindCourseClassDto) {
-    return this.courseClassesService.findAll(q);
+  @SwaggerMethod({ ok: { type: CourseClassDto, isArray: true } })
+  findByCondition(@Query() q: FindCourseClassDto) {
+    return this.courseClassesService.findByCondition(q);
   }
 
   @Get(':id')
-  @AutoSummarize()
+  @SwaggerMethod({ ok: { type: CourseClassDto, isNullable: true } })
   findOne(@Param('id') id: string) {
     return this.courseClassesService.findById(id);
   }
 
-  @Patch(':id')
-  @AutoSummarize()
-  @Roles(['Admin'])
-  update(@Param('id') id: string, @Body() data: UpdateCourseClassDto) {
-    return this.courseClassesService.update(id, data);
-  }
+  // @Patch(':id')
+  // @Roles(['Admin'])
+  // update(@Param('id') id: string, @Body() data: UpdateCourseClassDto) {
+  //   return this.courseClassesService.update(id, data);
+  // }
 
-  @Delete(':id')
-  @AutoSummarize()
-  @Roles(['Admin'])
-  remove(@Param('id') id: string) {
-    return this.courseClassesService.remove(id);
-  }
+  // @Delete(':id')
+  // @Roles(['Admin'])
+  // remove(@Param('id') id: string) {
+  //   return this.courseClassesService.remove(id);
+  // }
 
+  // TODO: Response
   @Get(':id/sessions')
-  @AutoSummarize()
+  @SwaggerMethod({ notFound: {} })
   getSessions(@Param('id') id: string) {
     return this.courseClassesService.getSessions(id);
   }
 
+  // TODO: Response
   @Put(':id/students')
-  @AutoSummarize()
+  @SwaggerMethod({ notFound: {} })
   updateStudentsList(
     @Param('id') id: string,
     @Body() data: UpdateCourseClassStudentsListDto,

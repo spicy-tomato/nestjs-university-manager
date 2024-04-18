@@ -15,7 +15,7 @@ export class DateHelper {
       endAt: Duration.fromISO(slot.endAt),
     }));
 
-    let slot: GenericSlot<DateTime>;
+    let slot: GenericSlot<DateTime> | null = null;
 
     const result: GenericSlot<string>[] = [];
 
@@ -45,7 +45,7 @@ export class DateHelper {
       nextDays.sort((a, b) =>
         a.startAt.valueOf() < b.startAt.valueOf() ? -1 : 1,
       );
-      return first(nextDays);
+      return nextDays[0];
     }
 
     if (

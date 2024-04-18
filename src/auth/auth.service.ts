@@ -11,7 +11,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<LocalPayload> {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<LocalPayload | null> {
     const user = await this.usersService.findOneWithPassword({ email });
     if (!user) {
       return null;

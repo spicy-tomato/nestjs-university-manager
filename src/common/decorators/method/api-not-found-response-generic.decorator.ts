@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiNotFoundResponse } from '@nestjs/swagger';
 
-type ApiNotFoundResponseGenericParams = {
+export type ApiNotFoundResponseGenericParams = {
   description?: string;
 };
 

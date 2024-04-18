@@ -80,7 +80,7 @@ export class CourseClassesService {
     return this.findById(id);
   }
 
-  findAll(q: FindCourseClassDto) {
+  findByCondition(q: FindCourseClassDto) {
     return this.prisma.courseClass.findMany({
       where: {
         code: { contains: q.code },
@@ -118,6 +118,10 @@ export class CourseClassesService {
   }
 
   async getSessions(id: string) {
+    if (!this.findById(id)) {
+      throw new CourseClassNotFoundException(id);
+    }
+
     const sessions = await this.prisma.session.findMany({
       where: { courseClassId: id },
       select: {

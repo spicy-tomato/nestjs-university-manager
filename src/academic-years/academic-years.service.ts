@@ -51,25 +51,29 @@ export class AcademicYearsService {
       return current;
     }
 
-    if (current) {
-      await this.prisma.academicYear.update({
-        data: { isCurrent: false },
-        where: { id: current.id },
-      });
-    }
+    await this.prisma.$transaction(async (tx) => {
+      if (current) {
+        await this.prisma.academicYear.update({
+          data: { isCurrent: false },
+          where: { id: current.id },
+        });
+      }
 
-    return this.prisma.academicYear.update({
-      data: { isCurrent: true },
-      where: { id },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        startYear: true,
-        endYear: true,
-        isCurrent: true,
-      },
+      await this.prisma.academicYear.update({
+        data: { isCurrent: true },
+        where: { id },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          startYear: true,
+          endYear: true,
+          isCurrent: true,
+        },
+      });
     });
+
+    return true;
   }
 
   async remove(id: string) {

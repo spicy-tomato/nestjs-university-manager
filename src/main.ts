@@ -31,6 +31,11 @@ function setupSwagger(app: INestApplication<any>): void {
       tagsSorter: 'alpha',
       persistAuthorization: true,
     },
+    customCss: `
+    .auth-btn-wrapper .btn-done {
+      margin-left: 1em;
+    }
+    `,
   });
 }
 

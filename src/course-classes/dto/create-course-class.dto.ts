@@ -5,6 +5,8 @@ import {
   IsDateString,
   IsMongoId,
   IsNotEmpty,
+  Max,
+  Min,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
@@ -37,6 +39,8 @@ export class CreateCourseClassDto {
   endAt?: string;
 
   @IsNotEmpty()
+  @Min(1)
+  @Max(50)
   sessionCount: number;
 
   @IsArray()

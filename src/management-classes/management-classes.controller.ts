@@ -8,52 +8,63 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { AutoBearer, AutoSummarize, Roles } from '../common/decorators';
+import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
 import {
   CreateManagementClassDto,
   FindManagementClassDto,
+  ManagementClassDto,
+  ManagementClassListItemDto,
   UpdateManagementClassDto,
 } from './dto';
 import { ManagementClassesService } from './management-classes.service';
 
 @Controller('management-classes')
-@ApiTags('management-classes')
-@AutoBearer()
+@SwaggerClass({ tag: 'management-classes' })
 export class ManagementClassesController {
   constructor(
     private readonly managementClassService: ManagementClassesService,
   ) {}
 
   @Post()
-  @AutoSummarize()
   @Roles(['Admin'])
+  @SwaggerMethod({
+    created: { type: ManagementClassListItemDto },
+    notFound: {},
+    conflict: {},
+  })
   create(@Body() data: CreateManagementClassDto) {
     return this.managementClassService.create(data);
   }
 
   @Get()
-  @AutoSummarize()
+  @SwaggerMethod({ ok: { type: ManagementClassListItemDto, isArray: true } })
   findByCondition(@Query() q: FindManagementClassDto) {
     return this.managementClassService.findByCondition(q);
   }
 
   @Get(':id')
-  @AutoSummarize()
+  @SwaggerMethod({ ok: { type: ManagementClassDto, isNullable: true } })
   findOne(@Param('id') id: string) {
     return this.managementClassService.findById(id);
   }
 
   @Patch(':id')
-  @AutoSummarize()
   @Roles(['Admin'])
+  @SwaggerMethod({
+    ok: { type: ManagementClassListItemDto },
+    notFound: {},
+    conflict: {},
+  })
   update(@Param('id') id: string, @Body() data: UpdateManagementClassDto) {
     return this.managementClassService.update(id, data);
   }
 
   @Delete(':id')
-  @AutoSummarize()
   @Roles(['Admin'])
+  @SwaggerMethod({
+    ok: { type: ManagementClassDto },
+    notFound: {},
+  })
   remove(@Param('id') id: string) {
     return this.managementClassService.remove(id);
   }

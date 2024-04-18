@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiUnauthorizedResponse } from '@nestjs/swagger';
 
-type ApiUnauthorizedResponseGenericParams = {
+export type ApiUnauthorizedResponseGenericParams = {
   description?: string;
 };
 

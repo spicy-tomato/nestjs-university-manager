@@ -60,12 +60,13 @@ export class ProgramsService {
     await this.validateExist(id);
 
     if (
-      await this.prisma.program.findFirst({
+      data.code &&
+      (await this.prisma.program.findFirst({
         where: {
           id: { not: id },
           code: data.code,
         },
-      })
+      }))
     ) {
       throw new ProgramConflictException(data.code, 'code');
     }

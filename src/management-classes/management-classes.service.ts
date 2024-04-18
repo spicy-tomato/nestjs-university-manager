@@ -66,9 +66,24 @@ export class ManagementClassesService {
 
     await this.validateAcademicYearId(data.academicYearId);
 
+    if (data.code && await this.findOne({ code: data.code })) {
+      throw new ManagementClassConflictException(data.code, 'code');
+    }
+
     return this.prisma.managementClass.update({
       where: { id },
       data,
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        academicYear: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
   }
 
@@ -121,7 +136,11 @@ export class ManagementClassesService {
     }
   }
 
-  private async validateAcademicYearId(academicYearId: string): Promise<void> {
+  private async validateAcademicYearId(academicYearId?: string): Promise<void> {
+    if (academicYearId === undefined) {
+      return;
+    }
+
     if (
       !(await this.prisma.academicYear.findFirst({
         where: { id: academicYearId },

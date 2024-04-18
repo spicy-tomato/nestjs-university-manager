@@ -6,7 +6,7 @@ export const AutoSummarize = (): MethodDecorator => {
     key?: string | symbol,
     descriptor?: TypedPropertyDescriptor<any>,
   ): any => {
-    if (typeof key === 'string') {
+    if (typeof key === 'string' && descriptor) {
       const summary = startCase(key);
 
       Reflect.defineMetadata(

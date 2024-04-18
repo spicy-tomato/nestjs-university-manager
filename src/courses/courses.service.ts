@@ -75,12 +75,13 @@ export class CoursesService {
     }
 
     if (
-      await this.prisma.course.findFirst({
+      data.code &&
+      (await this.prisma.course.findFirst({
         where: {
           id: { not: id },
           code: data.code,
         },
-      })
+      }))
     ) {
       throw new CourseConflictException(data.code, 'code');
     }
@@ -89,7 +90,7 @@ export class CoursesService {
 
     const toRemoveCoursePrograms = differenceWith(
       course.programs,
-      data.programIds,
+      data.programIds ?? [],
       (oldProgram, newProgramId) => oldProgram.id === newProgramId,
     );
 
@@ -166,7 +167,11 @@ export class CoursesService {
     }
   }
 
-  private async validateProgramIds(programIds: string[]): Promise<void> {
+  private async validateProgramIds(programIds?: string[]): Promise<void> {
+    if (!programIds) {
+      return;
+    }
+
     for (const pid of programIds) {
       if (
         !(await this.prisma.program.findFirst({

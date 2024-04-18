@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBadRequestResponse } from '@nestjs/swagger';
 
-type ApiBadRequestResponseGenericParams = {
+export type ApiBadRequestResponseGenericParams = {
   description?: string;
 };
 

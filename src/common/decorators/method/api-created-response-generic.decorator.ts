@@ -6,7 +6,7 @@ import {
 } from '@nestjs/swagger';
 import { Result } from '../../dto';
 
-type ApiCreatedResponseGenericParams<T> = {
+export type ApiCreatedResponseGenericParams<T = {}> = {
   type: T;
   description?: string;
 };

@@ -7,3 +7,4 @@ export * from './api-unauthorized-response-generic.decorator';
 export * from './auto-summarize.decorator';
 export * from './public.decorator';
 export * from './roles.decorator';
+export * from './swagger-method.decorator';

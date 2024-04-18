@@ -7,7 +7,7 @@ import {
 import { TypeHelper } from '../helpers';
 
 @Injectable()
-export class ParseNullableIntPipe<T> implements PipeTransform {
+export class ParseNullableIntPipe<T extends {}> implements PipeTransform {
   constructor(private readonly fields: (keyof T)[] = []) {}
 
   transform(value: T, metadata: ArgumentMetadata): any {
