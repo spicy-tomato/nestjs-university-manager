@@ -13,6 +13,8 @@ import {
   AddCoursesDto,
   CreateProgramDto,
   FindProgramDto,
+  ProgramDto,
+  ProgramListItemDto,
   UpdateProgramDto,
 } from './dto';
 import { ProgramsService } from './programs.service';
@@ -24,40 +26,53 @@ export class ProgramsController {
 
   @Post()
   @Roles(['Admin'])
-  @SwaggerMethod({})
+  @SwaggerMethod({
+    created: { type: ProgramListItemDto },
+    conflict: {},
+  })
   create(@Body() data: CreateProgramDto) {
     return this.programsService.create(data);
   }
 
   @Get()
-  @SwaggerMethod({})
+  @SwaggerMethod({ ok: { type: ProgramListItemDto, isArray: true } })
   findByCondition(@Query() q: FindProgramDto) {
     return this.programsService.findByCondition(q);
   }
 
   @Get(':id')
-  @SwaggerMethod({})
+  @SwaggerMethod({ ok: { type: ProgramDto, isNullable: true } })
   findOne(@Param('id') id: string) {
     return this.programsService.findById(id);
   }
 
   @Patch(':id')
   @Roles(['Admin'])
-  @SwaggerMethod({})
+  @SwaggerMethod({
+    ok: { type: ProgramListItemDto },
+    notFound: {},
+    conflict: {},
+  })
   update(@Param('id') id: string, @Body() data: UpdateProgramDto) {
     return this.programsService.update(id, data);
   }
 
   @Delete(':id')
   @Roles(['Admin'])
-  @SwaggerMethod({})
+  @SwaggerMethod({
+    ok: { type: ProgramListItemDto },
+    notFound: {},
+  })
   remove(@Param('id') id: string) {
     return this.programsService.remove(id);
   }
 
   @Patch(':id/courses')
   @Roles(['Admin'])
-  @SwaggerMethod({})
+  @SwaggerMethod({
+    ok: { type: ProgramDto },
+    notFound: {},
+  })
   addCourses(@Param('id') id: string, @Body() data: AddCoursesDto) {
     return this.programsService.addCourses(id, data);
   }

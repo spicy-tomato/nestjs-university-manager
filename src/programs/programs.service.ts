@@ -6,6 +6,8 @@ import {
   AddCoursesDto,
   CreateProgramDto,
   FindProgramDto,
+  ProgramDto,
+  ProgramListItemDto,
   UpdateProgramDto,
 } from './dto';
 import {
@@ -28,12 +30,7 @@ export class ProgramsService {
         name: data.name,
         deletedAt: null,
       },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        createdAt: true,
-      },
+      select: ProgramListItemDto.query,
     });
   }
 
@@ -47,12 +44,7 @@ export class ProgramsService {
         code: { contains: q.code },
         name: { contains: q.name },
       },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        createdAt: true,
-      },
+      select: ProgramListItemDto.query,
     });
   }
 
@@ -74,12 +66,7 @@ export class ProgramsService {
     return this.prisma.program.update({
       data,
       where: { id },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        createdAt: true,
-      },
+      select: ProgramListItemDto.query,
     });
   }
 
@@ -88,6 +75,7 @@ export class ProgramsService {
 
     return this.prisma.program.delete({
       where: { id },
+      select: ProgramListItemDto.query,
     });
   }
 
@@ -158,20 +146,7 @@ export class ProgramsService {
   private async findOne(where: Prisma.ProgramWhereUniqueInput) {
     return this.prisma.program.findUnique({
       where,
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        createdAt: true,
-        courses: {
-          select: {
-            id: true,
-            code: true,
-            name: true,
-          },
-        },
-        managementClasses: true,
-      },
+      select: ProgramDto.query,
     });
   }
 

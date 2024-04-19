@@ -28,9 +28,51 @@ export class ManagementClassDto {
   academicYear: AcademicYearDto;
   program: ProgramDto;
   students: StudentDto[];
+
+  static query = {
+    id: true,
+    code: true,
+    name: true,
+    program: {
+      select: {
+        id: true,
+        code: true,
+        name: true,
+      },
+    },
+    academicYear: {
+      select: {
+        id: true,
+        name: true,
+      },
+    },
+    students: {
+      select: {
+        profile: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    },
+  };
 }
 
 export class ManagementClassListItemDto extends OmitType(ManagementClassDto, [
   'program',
   'students',
-]) {}
+]) {
+  static query = {
+    id: true,
+    code: true,
+    name: true,
+    academicYear: {
+      select: {
+        id: true,
+        name: true,
+      },
+    },
+  };
+}

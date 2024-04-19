@@ -3,6 +3,7 @@ import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
 import { CourseClassesService } from './course-classes.service';
 import {
   CourseClassDto,
+  CourseClassListItemDto,
   CreateCourseClassDto,
   FindCourseClassDto,
   UpdateCourseClassStudentsListDto,
@@ -16,7 +17,7 @@ export class CourseClassesController {
   @Post()
   @Roles(['Admin'])
   @SwaggerMethod({
-    created: { type: CourseClassDto },
+    created: { type: CourseClassListItemDto },
     conflict: {},
   })
   create(@Body() data: CreateCourseClassDto) {
@@ -24,7 +25,7 @@ export class CourseClassesController {
   }
 
   @Get()
-  @SwaggerMethod({ ok: { type: CourseClassDto, isArray: true } })
+  @SwaggerMethod({ ok: { type: CourseClassListItemDto, isArray: true } })
   findByCondition(@Query() q: FindCourseClassDto) {
     return this.courseClassesService.findByCondition(q);
   }
@@ -56,7 +57,10 @@ export class CourseClassesController {
 
   // TODO: Response
   @Put(':id/students')
-  @SwaggerMethod({ notFound: {} })
+  @SwaggerMethod({
+    ok: { type: CourseClassDto },
+    notFound: {},
+  })
   updateStudentsList(
     @Param('id') id: string,
     @Body() data: UpdateCourseClassStudentsListDto,

@@ -12,8 +12,10 @@ import {
   CreateUserProfileStudentDto,
   CreateUserProfileTeacherDto,
 } from './dto';
-import { StudentConflictException } from './exceptions/student-conflict.exception';
-import { TeacherConflictException } from './exceptions/teacher-conflict.exception';
+import {
+  StudentConflictException,
+  TeacherConflictException,
+} from './exceptions';
 
 @Injectable()
 export class UsersService {
@@ -43,6 +45,13 @@ export class UsersService {
     const hashPassword = await hash(data.password, salt);
     data.password = hashPassword;
 
+    const studentCreate = {
+      studentId: data.profile!.student!.studentId,
+      managementClassId: data.profile!.student!.managementClassId,
+    };
+
+    const teacherCreate = { teacherId: data.profile!.teacher!.teacherId };
+
     return this.prisma.user.create({
       data: {
         email: data.email,
@@ -58,21 +67,9 @@ export class UsersService {
             isMale: data.profile.isMale,
             address: data.profile.address,
             student:
-              data.role === 'Student'
-                ? {
-                    create: {
-                      studentId: data.profile!.student!.studentId,
-                      managementClassId:
-                        data.profile!.student!.managementClassId,
-                    },
-                  }
-                : undefined,
+              data.role === 'Student' ? { create: studentCreate } : undefined,
             teacher:
-              data.role === 'Teacher'
-                ? {
-                    create: { teacherId: data.profile!.teacher!.teacherId },
-                  }
-                : undefined,
+              data.role === 'Teacher' ? { create: teacherCreate } : undefined,
           },
         },
       },
@@ -129,6 +126,29 @@ export class UsersService {
       return null;
     }
 
+    const studentSelect = {
+      id: true,
+      studentId: true,
+      managementClass: {
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          academicYear: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    };
+
+    const teacherSelect = {
+      id: true,
+      teacherId: true,
+    };
+
     return this.prisma.user.findUnique({
       where,
       select: {
@@ -144,37 +164,8 @@ export class UsersService {
             phoneNumber: true,
             isMale: true,
             address: true,
-            student:
-              role === 'Student'
-                ? {
-                    select: {
-                      id: true,
-                      studentId: true,
-                      managementClass: {
-                        select: {
-                          id: true,
-                          code: true,
-                          name: true,
-                          academicYear: {
-                            select: {
-                              id: true,
-                              name: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  }
-                : undefined,
-            teacher:
-              role === 'Teacher'
-                ? {
-                    select: {
-                      id: true,
-                      teacherId: true,
-                    },
-                  }
-                : undefined,
+            student: role === 'Student' ? { select: studentSelect } : undefined,
+            teacher: role === 'Teacher' ? { select: teacherSelect } : undefined,
           },
         },
       },

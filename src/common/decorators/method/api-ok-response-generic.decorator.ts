@@ -44,8 +44,6 @@ export const ApiOkResponseGeneric = <T extends Type<unknown>>(
           nullable: isNullable,
         };
 
-  // console.log(type, isArray);
-
   return applyDecorators(
     ApiExtraModels(Result, type),
     ApiOkResponse({

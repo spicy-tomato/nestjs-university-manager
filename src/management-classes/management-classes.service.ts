@@ -2,9 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { AcademicYearNotFoundException } from '../academic-years/exceptions';
 import { PrismaService } from '../prisma';
-import { FindManagementClassDto } from './dto';
-import { CreateManagementClassDto } from './dto/create-management-class.dto';
-import { UpdateManagementClassDto } from './dto/update-management-class.dto';
+import {
+  CreateManagementClassDto,
+  FindManagementClassDto,
+  ManagementClassDto,
+  ManagementClassListItemDto,
+  UpdateManagementClassDto,
+} from './dto';
 import {
   ManagementClassConflictException,
   ManagementClassNotFoundException,
@@ -23,17 +27,7 @@ export class ManagementClassesService {
 
     return this.prisma.managementClass.create({
       data,
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        academicYear: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      select: ManagementClassListItemDto.query,
     });
   }
 
@@ -43,17 +37,7 @@ export class ManagementClassesService {
         code: { contains: q.code },
         name: { contains: q.name },
       },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        academicYear: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      select: ManagementClassListItemDto.query,
     });
   }
 
@@ -66,24 +50,14 @@ export class ManagementClassesService {
 
     await this.validateAcademicYearId(data.academicYearId);
 
-    if (data.code && await this.findOne({ code: data.code })) {
+    if (data.code && (await this.findOne({ code: data.code }))) {
       throw new ManagementClassConflictException(data.code, 'code');
     }
 
     return this.prisma.managementClass.update({
       where: { id },
       data,
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        academicYear: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      select: ManagementClassListItemDto.query,
     });
   }
 
@@ -98,35 +72,7 @@ export class ManagementClassesService {
   private async findOne(where: Prisma.ManagementClassWhereUniqueInput) {
     return this.prisma.managementClass.findUnique({
       where,
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        program: {
-          select: {
-            id: true,
-            code: true,
-            name: true,
-          },
-        },
-        academicYear: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        students: {
-          select: {
-            profile: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
-            },
-          },
-        },
-      },
+      select: ManagementClassDto.query,
     });
   }
 
