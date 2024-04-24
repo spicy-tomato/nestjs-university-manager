@@ -81,12 +81,32 @@ export class CourseClassesService {
     return this.findOne({ id });
   }
 
-  update(id: string, data: UpdateCourseClassDto) {
-    return `This action updates a #${id} courseClass`;
+  async update(id: string, data: UpdateCourseClassDto) {
+    await this.validateExist(id);
+
+    if (data.code && (await this.findOne({ code: data.code }))) {
+      throw new CourseClassConflictException(data.code, 'code');
+    }
+
+    return this.prisma.courseClass.update({
+      where: { id },
+      data: {
+        code: data.code,
+        name: data.name,
+        startAt: data.startAt,
+        endAt: data.endAt,
+      },
+      select: CourseClassListItemDto.query,
+    });
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} courseClass`;
+  async remove(id: string) {
+    await this.validateExist(id);
+
+    return this.prisma.courseClass.delete({
+      where: { id },
+      select: CourseClassListItemDto.query,
+    });
   }
 
   async getSessions(id: string) {
@@ -171,6 +191,12 @@ export class CourseClassesService {
       where,
       select: CourseClassDto.query,
     });
+  }
+
+  private async validateExist(id: string): Promise<void> {
+    if (!(await this.findById(id))) {
+      throw new CourseClassNotFoundException(id);
+    }
   }
 
   private async validateCourseId(courseId: string): Promise<void> {

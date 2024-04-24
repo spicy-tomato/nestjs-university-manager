@@ -1,11 +1,23 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
+import { SessionDto } from '../sessions/dto/session.dto';
 import { CourseClassesService } from './course-classes.service';
 import {
   CourseClassDto,
   CourseClassListItemDto,
   CreateCourseClassDto,
   FindCourseClassDto,
+  UpdateCourseClassDto,
   UpdateCourseClassStudentsListDto,
 } from './dto';
 
@@ -36,21 +48,33 @@ export class CourseClassesController {
     return this.courseClassesService.findById(id);
   }
 
-  // @Patch(':id')
-  // @Roles(['Admin'])
-  // update(@Param('id') id: string, @Body() data: UpdateCourseClassDto) {
-  //   return this.courseClassesService.update(id, data);
-  // }
+  @Patch(':id')
+  @Roles(['Admin'])
+  @SwaggerMethod({
+    ok: { type: CourseClassListItemDto },
+    notFound: {},
+    conflict: {},
+  })
+  update(@Param('id') id: string, @Body() data: UpdateCourseClassDto) {
+    return this.courseClassesService.update(id, data);
+  }
 
-  // @Delete(':id')
-  // @Roles(['Admin'])
-  // remove(@Param('id') id: string) {
-  //   return this.courseClassesService.remove(id);
-  // }
+  @Delete(':id')
+  @Roles(['Admin'])
+  @SwaggerMethod({
+    ok: { type: CourseClassListItemDto },
+    notFound: {},
+  })
+  remove(@Param('id') id: string) {
+    return this.courseClassesService.remove(id);
+  }
 
   // TODO: Response
   @Get(':id/sessions')
-  @SwaggerMethod({ notFound: {} })
+  @SwaggerMethod({
+    ok: { type: SessionDto, isArray: true },
+    notFound: {},
+  })
   getSessions(@Param('id') id: string) {
     return this.courseClassesService.getSessions(id);
   }

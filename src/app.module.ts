@@ -13,6 +13,7 @@ import { CoursesModule } from './courses/courses.module';
 import { ManagementClassesModule } from './management-classes/management-classes.module';
 import { PrismaModule } from './prisma';
 import { ProgramsModule } from './programs/programs.module';
+import { SessionsModule } from './sessions/sessions.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -39,6 +40,7 @@ import { UsersModule } from './users/users.module';
     CoursesModule,
     ManagementClassesModule,
     ProgramsModule,
+    SessionsModule,
     UsersModule,
   ],
   controllers: [AppController],
