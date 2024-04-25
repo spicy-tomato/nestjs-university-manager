@@ -30,19 +30,19 @@ export class ProgramsController {
     created: { type: ProgramListItemDto },
     conflict: {},
   })
-  create(@Body() data: CreateProgramDto) {
+  createProgram(@Body() data: CreateProgramDto) {
     return this.programsService.create(data);
   }
 
   @Get()
   @SwaggerMethod({ ok: { type: ProgramListItemDto, isArray: true } })
-  findByCondition(@Query() q: FindProgramDto) {
+  findProgramByCondition(@Query() q: FindProgramDto) {
     return this.programsService.findByCondition(q);
   }
 
   @Get(':id')
   @SwaggerMethod({ ok: { type: ProgramDto, isNullable: true } })
-  findOne(@Param('id') id: string) {
+  findOneProgram(@Param('id') id: string) {
     return this.programsService.findById(id);
   }
 
@@ -53,7 +53,7 @@ export class ProgramsController {
     notFound: {},
     conflict: {},
   })
-  update(@Param('id') id: string, @Body() data: UpdateProgramDto) {
+  updateProgram(@Param('id') id: string, @Body() data: UpdateProgramDto) {
     return this.programsService.update(id, data);
   }
 
@@ -63,7 +63,7 @@ export class ProgramsController {
     ok: { type: ProgramListItemDto },
     notFound: {},
   })
-  remove(@Param('id') id: string) {
+  removeProgram(@Param('id') id: string) {
     return this.programsService.remove(id);
   }
 
@@ -73,7 +73,7 @@ export class ProgramsController {
     ok: { type: ProgramDto },
     notFound: {},
   })
-  addCourses(@Param('id') id: string, @Body() data: AddCoursesDto) {
+  addProgramCourses(@Param('id') id: string, @Body() data: AddCoursesDto) {
     return this.programsService.addCourses(id, data);
   }
 }

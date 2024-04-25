@@ -26,13 +26,13 @@ export class AcademicYearsController {
     badRequest: {},
     conflict: {},
   })
-  create(@Body() data: CreateAcademicYearDto) {
+  createAcademicYear(@Body() data: CreateAcademicYearDto) {
     return this.academicYearsService.create(data);
   }
 
   @Get()
   @SwaggerMethod({ ok: { type: AcademicYearDto, isArray: true } })
-  findInRange(
+  findAcademicYearInRange(
     @Query(new ParseNullableIntPipe(['start', 'end']))
     q: FindAcademicYearInRangeQuery,
   ) {
@@ -41,13 +41,13 @@ export class AcademicYearsController {
 
   @Get('current')
   @SwaggerMethod({ ok: { type: AcademicYearDto, isNullable: true } })
-  getCurrent() {
+  getCurrentAcademicYear() {
     return this.academicYearsService.getCurrent();
   }
 
   @Get(':id')
   @SwaggerMethod({ ok: { type: AcademicYearDto, isNullable: true } })
-  findOne(@Param('id') id: string) {
+  findOneAcademicYear(@Param('id') id: string) {
     return this.academicYearsService.findById(id);
   }
 
@@ -58,7 +58,7 @@ export class AcademicYearsController {
     badRequest: {},
     notFound: {},
   })
-  remove(@Param('id') id: string) {
+  removeAcademicYear(@Param('id') id: string) {
     return this.academicYearsService.remove(id);
   }
 

@@ -19,7 +19,7 @@ export class UsersController {
   @Post()
   @Roles(['SystemAdmin', 'Admin'])
   @SwaggerMethod({})
-  async create(
+  async createUser(
     @JwtUser() user: JwtUserDto,
     @Body(new CreateUserDtoValidationPipe()) payload: CreateUserDto,
   ) {
@@ -28,7 +28,7 @@ export class UsersController {
 
   @Get('me')
   @SwaggerMethod({ ok: { type: JwtUserDto } })
-  getProfile(@Req() req: Request) {
+  getUserProfile(@Req() req: Request) {
     return this.usersService.findById((req.user as { id: string }).id);
   }
 }

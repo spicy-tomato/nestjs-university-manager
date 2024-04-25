@@ -30,19 +30,19 @@ export class CoursesController {
     notFound: {},
     conflict: {},
   })
-  create(@Body() data: CreateCourseDto) {
+  createCourse(@Body() data: CreateCourseDto) {
     return this.coursesService.create(data);
   }
 
   @Get()
   @SwaggerMethod({ ok: { type: CourseListItemDto, isArray: true } })
-  findByCondition(@Query() q: FindCourseDto) {
+  findCourseByCondition(@Query() q: FindCourseDto) {
     return this.coursesService.findByCondition(q);
   }
 
   @Get(':id')
   @SwaggerMethod({ ok: { type: CourseDto, isNullable: true } })
-  findOne(@Param('id') id: string) {
+  findOneCourse(@Param('id') id: string) {
     return this.coursesService.findById(id);
   }
 
@@ -53,7 +53,7 @@ export class CoursesController {
     notFound: {},
     conflict: {},
   })
-  update(@Param('id') id: string, @Body() data: UpdateCourseDto) {
+  updateCourse(@Param('id') id: string, @Body() data: UpdateCourseDto) {
     return this.coursesService.update(id, data);
   }
 
@@ -63,7 +63,7 @@ export class CoursesController {
     ok: { type: CourseDto },
     notFound: {},
   })
-  remove(@Param('id') id: string) {
+  removeCourse(@Param('id') id: string) {
     return this.coursesService.remove(id);
   }
 }

@@ -32,19 +32,19 @@ export class ManagementClassesController {
     notFound: {},
     conflict: {},
   })
-  create(@Body() data: CreateManagementClassDto) {
+  createManagementClass(@Body() data: CreateManagementClassDto) {
     return this.managementClassService.create(data);
   }
 
   @Get()
   @SwaggerMethod({ ok: { type: ManagementClassListItemDto, isArray: true } })
-  findByCondition(@Query() q: FindManagementClassDto) {
+  findManagementClassByCondition(@Query() q: FindManagementClassDto) {
     return this.managementClassService.findByCondition(q);
   }
 
   @Get(':id')
   @SwaggerMethod({ ok: { type: ManagementClassDto, isNullable: true } })
-  findOne(@Param('id') id: string) {
+  findOneManagementClass(@Param('id') id: string) {
     return this.managementClassService.findById(id);
   }
 
@@ -55,7 +55,10 @@ export class ManagementClassesController {
     notFound: {},
     conflict: {},
   })
-  update(@Param('id') id: string, @Body() data: UpdateManagementClassDto) {
+  updateManagementClass(
+    @Param('id') id: string,
+    @Body() data: UpdateManagementClassDto,
+  ) {
     return this.managementClassService.update(id, data);
   }
 
@@ -65,7 +68,7 @@ export class ManagementClassesController {
     ok: { type: ManagementClassDto },
     notFound: {},
   })
-  remove(@Param('id') id: string) {
+  removeManagementClass(@Param('id') id: string) {
     return this.managementClassService.remove(id);
   }
 }
