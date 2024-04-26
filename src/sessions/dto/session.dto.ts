@@ -26,6 +26,8 @@ export class SessionDto {
 
   static query = {
     id: true,
+    startAt: true,
+    endAt: true,
     courseClass: {
       select: {
         id: true,
