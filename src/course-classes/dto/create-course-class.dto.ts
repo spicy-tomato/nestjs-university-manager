@@ -52,4 +52,8 @@ export class CreateCourseClassDto {
   @IsNotEmpty()
   @IsMongoId()
   courseId: string;
+
+  @ValidateIf((o) => !!o.teacherId)
+  @IsMongoId()
+  teacherId: string;
 }

@@ -31,6 +31,7 @@ export class SessionDto {
         id: true,
         code: true,
         name: true,
+        teacherId: true,
       },
     },
     substituteTeacher: {

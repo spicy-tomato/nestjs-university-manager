@@ -75,6 +75,20 @@ export class CourseClassListItemDto extends OmitType(CourseClassDto, [
         name: true,
       },
     },
+    teacher: {
+      select: {
+        id: true,
+        teacherId: true,
+        profile: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true,
+          },
+        },
+      },
+    },
     startAt: true,
     endAt: true,
     sessionCount: true,

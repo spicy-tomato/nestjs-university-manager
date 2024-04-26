@@ -1,5 +1,6 @@
 import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
-import { SwaggerClass, SwaggerMethod } from '../common/decorators';
+import { JwtUser, SwaggerClass, SwaggerMethod } from '../common/decorators';
+import { JwtUserDto } from './../common/dto/jwt-user.dto';
 import { FindSessionDto, SessionDto } from './dto';
 import { SessionsService } from './sessions.service';
 
@@ -10,8 +11,11 @@ export class SessionsController {
 
   @Get()
   @SwaggerMethod({ ok: { type: SessionDto, isArray: true } })
-  getSessionByCondition(@Query() q: FindSessionDto) {
-    return this.sessionsService.findByCondition(q);
+  getSessionByCondition(
+    @Query() q: FindSessionDto,
+    @JwtUser() user: JwtUserDto,
+  ) {
+    return this.sessionsService.findByCondition(q, user.role, user.sub);
   }
 
   @Get(':id')

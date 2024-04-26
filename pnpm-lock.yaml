@@ -48,7 +48,7 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       luxon:
-        specifier: ^2.5.2
+        specifier: ~2.5.2
         version: 2.5.2
       passport:
         specifier: ^0.7.0
@@ -92,7 +92,7 @@ importers:
         version: 4.17.0
       '@types/luxon':
         specifier: ^2.3.2
-        version: 2.3.2
+        version: 2.4.0
       '@types/node':
         specifier: ^20.3.1
         version: 20.12.2
@@ -123,6 +123,9 @@ importers:
       jest:
         specifier: ^29.5.0
         version: 29.7.0(@types/node@20.12.2)(ts-node@10.9.2(@types/node@20.12.2)(typescript@4.8.4))
+      pnpm:
+        specifier: ^9.0.6
+        version: 9.0.6
       prettier:
         specifier: ^3.0.0
         version: 3.2.5
@@ -753,8 +756,8 @@ packages:
   '@types/lodash@4.17.0':
     resolution: {integrity: sha512-t7dhREVv6dbNj0q17X12j7yDG4bD/DHYX7o5/DbDxobP0HnGPgpRz2Ej77aL7TZT3DSw13fqUTj8J4mMnqa7WA==}
 
-  '@types/luxon@2.3.2':
-    resolution: {integrity: sha512-WOehptuhKIXukSUUkRgGbj2c997Uv/iUgYgII8U7XLJqq9W2oF0kQ6frEznRQbdurioz+L/cdaIm4GutTQfgmA==}
+  '@types/luxon@2.4.0':
+    resolution: {integrity: sha512-oCavjEjRXuR6URJEtQm0eBdfsBiEcGBZbq21of8iGkeKxU1+1xgKuFPClaBZl2KB8ZZBSWlgk61tH6Mf+nvZVw==}
 
   '@types/methods@1.1.4':
     resolution: {integrity: sha512-ymXWVrDiCxTBE3+RIrrP533E70eA+9qu7zdWoHuOmGujkYtzf4HQF96b8nwHLqhuf4ykX61IGRIB38CC6/sImQ==}
@@ -2141,8 +2144,8 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  libphonenumber-js@1.10.60:
-    resolution: {integrity: sha512-Ctgq2lXUpEJo5j1762NOzl2xo7z7pqmVWYai0p07LvAkQ32tbPv3wb+tcUeHEiXhKU5buM4H9MXsXo6OlM6C2g==}
+  libphonenumber-js@1.10.61:
+    resolution: {integrity: sha512-TsQsyzDttDvvzWNkbp/i0fVbzTGJIG0mUu/uNalIaRQEYeJxVQ/FPg+EJgSqfSXezREjM0V3RZ8cLVsKYhhw0Q==}
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -2527,6 +2530,11 @@ packages:
   pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
+
+  pnpm@9.0.6:
+    resolution: {integrity: sha512-9thjEwlzIHy3ozbWtDmiQqJqyAaAd99TDWqGBpQZhT3B/+ZAKexZSpxQWjpBDRlkPIcKumd2Mw9c/dzxCpwWFw==}
+    engines: {node: '>=18.12'}
+    hasBin: true
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -3978,7 +3986,7 @@ snapshots:
 
   '@types/lodash@4.17.0': {}
 
-  '@types/luxon@2.3.2': {}
+  '@types/luxon@2.4.0': {}
 
   '@types/methods@1.1.4': {}
 
@@ -4511,7 +4519,7 @@ snapshots:
   class-validator@0.14.1:
     dependencies:
       '@types/validator': 13.11.9
-      libphonenumber-js: 1.10.60
+      libphonenumber-js: 1.10.61
       validator: 13.11.0
 
   cli-cursor@3.1.0:
@@ -5699,7 +5707,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  libphonenumber-js@1.10.60: {}
+  libphonenumber-js@1.10.61: {}
 
   lines-and-columns@1.2.4: {}
 
@@ -6020,6 +6028,8 @@ snapshots:
       find-up: 4.1.0
 
   pluralize@8.0.0: {}
+
+  pnpm@9.0.6: {}
 
   prelude-ls@1.2.1: {}
 

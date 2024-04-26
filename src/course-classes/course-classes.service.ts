@@ -84,7 +84,7 @@ export class CourseClassesService {
   async update(id: string, data: UpdateCourseClassDto) {
     await this.validateExist(id);
 
-    if (data.code && (await this.findOne({ code: data.code }))) {
+    if (data.code && (await this.findOne({ code: data.code, NOT: { id } }))) {
       throw new CourseClassConflictException(data.code, 'code');
     }
 
@@ -95,6 +95,7 @@ export class CourseClassesService {
         name: data.name,
         startAt: data.startAt,
         endAt: data.endAt,
+        teacherId: data.teacherId,
       },
       select: CourseClassListItemDto.query,
     });
