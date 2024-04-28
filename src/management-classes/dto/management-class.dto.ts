@@ -1,62 +1,25 @@
 import { OmitType } from '@nestjs/swagger';
-
-class AcademicYearDto {
-  id: string;
-  name: string;
-}
-
-class ProgramDto {
-  id: string;
-  code: string;
-  name: string;
-}
-
-class StudentProfileDto {
-  id: string;
-  firstName: string;
-  lastName: string;
-}
-
-class StudentDto {
-  profile: StudentProfileDto;
-}
+import { Prisma } from '@prisma/client';
+import { AcademicYearSimpleDto } from '../../academic-years/dto';
+import { ProgramListItemDto } from '../../programs/dto';
+import { StudentSimpleDto } from '../../students/dto';
+import { FindManyQuery } from '../../types';
 
 export class ManagementClassDto {
   id: string;
   code: string;
   name: string;
-  academicYear: AcademicYearDto;
-  program: ProgramDto;
-  students: StudentDto[];
+  academicYear: AcademicYearSimpleDto;
+  program: ProgramListItemDto;
+  students: StudentSimpleDto[];
 
-  static query = {
+  static readonly query: FindManyQuery<Prisma.ManagementClassDelegate> = {
     id: true,
     code: true,
     name: true,
-    program: {
-      select: {
-        id: true,
-        code: true,
-        name: true,
-      },
-    },
-    academicYear: {
-      select: {
-        id: true,
-        name: true,
-      },
-    },
-    students: {
-      select: {
-        profile: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
-    },
+    academicYear: { select: AcademicYearSimpleDto.query },
+    program: { select: ProgramListItemDto.query },
+    students: { select: StudentSimpleDto.query },
   };
 }
 
@@ -64,15 +27,10 @@ export class ManagementClassListItemDto extends OmitType(ManagementClassDto, [
   'program',
   'students',
 ]) {
-  static query = {
+  static readonly query: FindManyQuery<Prisma.ManagementClassDelegate> = {
     id: true,
     code: true,
     name: true,
-    academicYear: {
-      select: {
-        id: true,
-        name: true,
-      },
-    },
+    academicYear: { select: AcademicYearSimpleDto.query },
   };
 }

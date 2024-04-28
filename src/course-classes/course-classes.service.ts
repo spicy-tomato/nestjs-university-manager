@@ -6,6 +6,7 @@ import { Duration } from 'luxon';
 import { DateHelper } from '../common/helpers';
 import { CourseNotFoundException } from '../courses/exceptions';
 import { PrismaService } from '../prisma';
+import { SessionListItemDto } from '../sessions/dto';
 import {
   CourseClassDto,
   CourseClassListItemDto,
@@ -117,12 +118,7 @@ export class CourseClassesService {
 
     const sessions = await this.prisma.session.findMany({
       where: { courseClassId: id },
-      select: {
-        id: true,
-        startAt: true,
-        endAt: true,
-        substituteTeacher: true,
-      },
+      select: SessionListItemDto.query,
     });
 
     return sessions;

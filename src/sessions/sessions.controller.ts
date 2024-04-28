@@ -1,7 +1,7 @@
-import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { JwtUser, SwaggerClass, SwaggerMethod } from '../common/decorators';
 import { JwtUserDto } from './../common/dto/jwt-user.dto';
-import { FindSessionDto, SessionDto } from './dto';
+import { FindSessionDto, SessionListItemDto } from './dto';
 import { SessionsService } from './sessions.service';
 
 @Controller('sessions')
@@ -10,7 +10,7 @@ export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}
 
   @Get()
-  @SwaggerMethod({ ok: { type: SessionDto, isArray: true } })
+  @SwaggerMethod({ ok: { type: SessionListItemDto, isArray: true } })
   getSessionByCondition(
     @Query() q: FindSessionDto,
     @JwtUser() user: JwtUserDto,
@@ -19,13 +19,8 @@ export class SessionsController {
   }
 
   @Get(':id')
-  @SwaggerMethod({ ok: { type: SessionDto, isNullable: true } })
-  findOneSession(@Param('id') id: string) {
-    return this.sessionsService.findOne(+id);
-  }
-
-  @Delete(':id')
-  removeSession(@Param('id') id: string) {
-    return this.sessionsService.remove(+id);
+  @SwaggerMethod({ ok: { type: SessionListItemDto, isNullable: true } })
+  findOneSession(@Param('id') id: string, @JwtUser() user: JwtUserDto) {
+    return this.sessionsService.findOne(id, user.role, user.sub);
   }
 }

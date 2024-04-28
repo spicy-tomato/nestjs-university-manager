@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { PrismaService } from '../prisma';
-import { FindSessionDto, SessionDto } from './dto';
+import { FindSessionDto, SessionListItemDto } from './dto';
 
 @Injectable()
 export class SessionsService {
@@ -18,7 +18,7 @@ export class SessionsService {
             lte: q.to,
           },
         },
-        select: SessionDto.query,
+        select: SessionListItemDto.query,
       });
     }
 
@@ -41,7 +41,7 @@ export class SessionsService {
           },
           courseClass: { teacherId: teacher.id },
         },
-        select: SessionDto.query,
+        select: SessionListItemDto.query,
       });
     }
 
@@ -63,15 +63,35 @@ export class SessionsService {
         },
         courseClass: { studentIds: { has: student.id } },
       },
-      select: SessionDto.query,
+      select: SessionListItemDto.query,
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} session`;
-  }
+  async findOne(id: string, role: Role, userId: string) {
+    if (role === 'Admin') {
+      return this.prisma.session.findMany({
+        where: { id },
+        select: SessionListItemDto.query,
+      });
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} session`;
+    if (role === 'Teacher') {
+      const teacher = await this.prisma.teacher.findFirst({
+        where: { profile: { userId } },
+        select: { id: true },
+      });
+
+      if (!teacher) {
+        throw new InternalServerErrorException();
+      }
+
+      return this.prisma.session.findMany({
+        where: {
+          id,
+          courseClass: { teacherId: teacher.id },
+        },
+        select: SessionListItemDto.query,
+      });
+    }
   }
 }

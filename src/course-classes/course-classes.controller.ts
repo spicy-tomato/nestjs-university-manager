@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
-import { SessionDto } from '../sessions/dto/session.dto';
+import { SessionListItemDto } from '../sessions/dto/session.dto';
 import { CourseClassesService } from './course-classes.service';
 import {
   CourseClassDto,
@@ -72,10 +72,9 @@ export class CourseClassesController {
     return this.courseClassesService.remove(id);
   }
 
-  // TODO: Response
   @Get(':id/sessions')
   @SwaggerMethod({
-    ok: { type: SessionDto, isArray: true },
+    ok: { type: SessionListItemDto, isArray: true },
     notFound: {},
   })
   getCourseClassSessions(@Param('id') id: string) {

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { AcademicYearDto, AcademicYearSimpleDto } from './dto';
 import { CreateAcademicYearDto } from './dto/create-academic-year.dto';
 import {
   AcademicYearConflictException,
@@ -37,6 +38,7 @@ export class AcademicYearsService {
         endYear: { lte: endYear },
       },
       orderBy: { startYear: 'asc' },
+      select: AcademicYearSimpleDto.query,
     });
   }
 
@@ -62,14 +64,7 @@ export class AcademicYearsService {
       await this.prisma.academicYear.update({
         data: { isCurrent: true },
         where: { id },
-        select: {
-          id: true,
-          code: true,
-          name: true,
-          startYear: true,
-          endYear: true,
-          isCurrent: true,
-        },
+        select: AcademicYearDto.query,
       });
     });
 
@@ -90,14 +85,7 @@ export class AcademicYearsService {
   getCurrent() {
     return this.prisma.academicYear.findFirst({
       where: { isCurrent: true },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        startYear: true,
-        endYear: true,
-        isCurrent: true,
-      },
+      select: AcademicYearDto.query,
     });
   }
 
@@ -112,14 +100,7 @@ export class AcademicYearsService {
   private findOne(where: Prisma.AcademicYearWhereUniqueInput) {
     return this.prisma.academicYear.findUnique({
       where,
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        startYear: true,
-        endYear: true,
-        isCurrent: true,
-      },
+      select: AcademicYearDto.query,
     });
   }
 }

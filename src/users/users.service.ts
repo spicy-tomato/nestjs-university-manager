@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
 import { genSalt, hash } from 'bcrypt';
+import { ManagementClassListItemDto } from '../management-classes/dto';
 import { ManagementClassNotFoundException } from '../management-classes/exceptions';
 import { PrismaService } from '../prisma/prisma.service';
 import {
@@ -129,19 +130,7 @@ export class UsersService {
     const studentSelect = {
       id: true,
       studentId: true,
-      managementClass: {
-        select: {
-          id: true,
-          code: true,
-          name: true,
-          academicYear: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-      },
+      managementClass: { select: ManagementClassListItemDto.query },
     };
 
     const teacherSelect = {

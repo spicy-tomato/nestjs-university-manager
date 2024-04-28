@@ -2,7 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { differenceWith } from 'lodash';
 import { PrismaService } from '../prisma';
-import { CreateCourseDto, FindCourseDto, UpdateCourseDto } from './dto';
+import {
+  CourseDto,
+  CourseListItemDto,
+  CreateCourseDto,
+  FindCourseDto,
+  UpdateCourseDto,
+} from './dto';
 import { CourseConflictException, CourseNotFoundException } from './exceptions';
 
 @Injectable()
@@ -23,19 +29,7 @@ export class CoursesService {
         programIds: data.programIds,
         deletedAt: null,
       },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        createdAt: true,
-        programs: {
-          select: {
-            id: true,
-            code: true,
-            name: true,
-          },
-        },
-      },
+      select: CourseDto.query,
     });
   }
 
@@ -45,12 +39,7 @@ export class CoursesService {
         code: { contains: q.code },
         name: { contains: q.name },
       },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        createdAt: true,
-      },
+      select: CourseListItemDto.query,
     });
   }
 
@@ -145,19 +134,7 @@ export class CoursesService {
   private async findOne(where: Prisma.CourseWhereUniqueInput) {
     return this.prisma.course.findUnique({
       where,
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        createdAt: true,
-        programs: {
-          select: {
-            id: true,
-            code: true,
-            name: true,
-          },
-        },
-      },
+      select: CourseDto.query,
     });
   }
 
