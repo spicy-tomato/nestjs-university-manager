@@ -137,3 +137,16 @@ export const sessionListItemQuery: FindManyQuery<Prisma.SessionDelegate> = {
   endAt: true,
   courseClass: { select: courseClassListItemQuery },
 };
+
+export const teacherQuery: FindManyQuery<Prisma.TeacherDelegate> = {
+  id: true,
+  teacherId: true,
+  profile: { select: profileQuery },
+  courseClasses: { select: courseClassListItemQuery },
+};
+
+export const teacherSimpleQuery: FindManyQuery<Prisma.TeacherDelegate> = {
+  id: true,
+  teacherId: true,
+  profile: { select: profileQuery },
+};

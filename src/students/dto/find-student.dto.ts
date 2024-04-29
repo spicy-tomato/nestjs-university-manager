@@ -1,3 +1,3 @@
 export class FindStudentDto {
-  studentId: string;
+  studentId?: string;
 }

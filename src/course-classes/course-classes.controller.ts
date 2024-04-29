@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
 import { SessionListItemDto } from '../sessions/dto/session.dto';
+import { StudentSimpleDto } from '../students/dto';
 import { CourseClassesService } from './course-classes.service';
 import {
   CourseClassDto,
@@ -81,10 +82,9 @@ export class CourseClassesController {
     return this.courseClassesService.getSessions(id);
   }
 
-  // TODO: Response
   @Put(':id/students')
   @SwaggerMethod({
-    ok: { type: CourseClassDto },
+    ok: { type: StudentSimpleDto, isArray: true },
     notFound: {},
   })
   updateCourseClassStudentsList(

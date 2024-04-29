@@ -14,8 +14,9 @@ import { ManagementClassesModule } from './management-classes/management-classes
 import { PrismaModule } from './prisma';
 import { ProgramsModule } from './programs/programs.module';
 import { SessionsModule } from './sessions/sessions.module';
-import { UsersModule } from './users/users.module';
 import { StudentsModule } from './students/students.module';
+import { TeachersModule } from './teachers/teachers.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { StudentsModule } from './students/students.module';
     SessionsModule,
     UsersModule,
     StudentsModule,
+    TeachersModule,
   ],
   controllers: [AppController],
   providers: [
