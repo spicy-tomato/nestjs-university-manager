@@ -37,7 +37,7 @@ model Teacher {
   profileId            String                 @unique @db.ObjectId
   courseClasses        CourseClass[]
   sessions             Session[]
-  ChangeSessionRequest ChangeSessionRequest[]
+  changeSessionRequest ChangeSessionRequest[]
 }
 
 model Student {
@@ -110,6 +110,7 @@ model CourseClass {
   studentIds   String[]  @db.ObjectId
   sessions     Session[]
   isoSlots     Slot[]
+  score        Score[]
 }
 
 model Session {
@@ -133,6 +134,15 @@ model ChangeSessionRequest {
   createdById String   @db.ObjectId
 }
 
+model Score {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  score         Float?
+  student       Student     @relation(fields: [studentId], references: [id])
+  studentId     String      @db.ObjectId
+  courseClass   CourseClass @relation(fields: [courseClassId], references: [id])
+  courseClassId String      @db.ObjectId
+}
+
 enum Role {
   SystemAdmin
   Admin
@@ -150,10 +160,4 @@ enum ChangeSessionRequestStatus {
 type Slot {
   startAt String
   endAt   String
-}
-
-type Score {
-  courseClassId   String
-  courseClassName String
-  score           Int
 }

@@ -6,7 +6,7 @@ export class ProfileDto {
   middleName: string;
   lastName: string;
 
-  get query() {
+  static get query() {
     return profileQuery;
   }
 }

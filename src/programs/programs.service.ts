@@ -128,16 +128,10 @@ export class ProgramsService {
         data: { courseIds },
       });
 
-      await Promise.all(
-        toAddProgramCourseIds.map((courseId) =>
-          tx.course.update({
-            where: { id: courseId },
-            data: {
-              programIds: { push: programId },
-            },
-          }),
-        ),
-      );
+      await tx.course.updateMany({
+        where: { id: { in: toAddProgramCourseIds } },
+        data: { programIds: { push: programId } },
+      });
     });
 
     return await this.findById(programId);

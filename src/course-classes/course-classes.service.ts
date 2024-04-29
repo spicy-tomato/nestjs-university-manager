@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import ObjectID from 'bson-objectid';
-import { difference } from 'lodash';
+import { difference, keyBy, sortBy } from 'lodash';
 import { Duration } from 'luxon';
 import { DateHelper } from '../common/helpers';
 import { CourseNotFoundException } from '../courses/exceptions';
 import { PrismaService } from '../prisma';
+import { ProfileDto } from '../profile/dto';
 import { SessionListItemDto } from '../sessions/dto';
 import {
   CourseClassDto,
@@ -13,6 +14,7 @@ import {
   CreateCourseClassDto,
   FindCourseClassDto,
   UpdateCourseClassDto,
+  UpdateCourseClassScoreDto,
   UpdateCourseClassStudentsListDto,
 } from './dto';
 import {
@@ -55,14 +57,7 @@ export class CourseClassesService {
         select: CourseClassListItemDto.query,
       });
 
-      await Promise.all(
-        sessions.map((session) =>
-          tx.session.create({
-            data: session,
-            select: null,
-          }),
-        ),
-      );
+      await tx.session.createMany({ data: sessions.map((session) => session) });
     });
 
     return this.findById(id);
@@ -111,6 +106,63 @@ export class CourseClassesService {
     });
   }
 
+  async getScores(id: string) {
+    if (!this.findById(id)) {
+      throw new CourseClassNotFoundException(id);
+    }
+
+    const scores = await this.prisma.score.findMany({
+      where: { courseClassId: id },
+      select: {
+        studentId: true,
+        score: true,
+      },
+    });
+    const scoresMap = keyBy(scores, 'studentId');
+
+    const courseClassWithStudents = await this.prisma.courseClass.findFirst({
+      where: { id },
+      select: {
+        students: {
+          select: {
+            id: true,
+            profile: { select: ProfileDto.query },
+            studentId: true,
+          },
+        },
+      },
+    });
+    const students = sortBy(courseClassWithStudents?.students ?? [], [
+      function (obj) {
+        return obj.profile.firstName;
+      },
+    ]);
+
+    return students.map((student) => ({
+      ...student,
+      score: scoresMap[student.id]?.score ?? null,
+    }));
+  }
+
+  async updateScores(id: string, data: UpdateCourseClassScoreDto) {
+    if (!this.findById(id)) {
+      throw new CourseClassNotFoundException(id);
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.score.deleteMany({ where: { courseClassId: id } });
+      await tx.score.createMany({
+        data: data.data.map((row) => ({
+          courseClassId: id,
+          studentId: row.id,
+          score: row.score,
+        })),
+      });
+    });
+
+    return this.getScores(id);
+  }
+
   async getSessions(id: string) {
     if (!this.findById(id)) {
       throw new CourseClassNotFoundException(id);
@@ -155,16 +207,10 @@ export class CourseClassesService {
         data: { studentIds },
       });
 
-      await Promise.all(
-        studentIdsToAdd.map((sid) =>
-          tx.student.update({
-            where: { id: sid },
-            data: {
-              courseClassIds: { push: id },
-            },
-          }),
-        ),
-      );
+      await tx.student.updateMany({
+        where: { id: { in: studentIdsToAdd } },
+        data: { courseClassIds: { push: id } },
+      });
 
       await Promise.all(
         studentsToRemove.map((student) =>

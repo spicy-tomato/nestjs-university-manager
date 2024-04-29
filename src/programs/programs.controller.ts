@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
 } from '@nestjs/common';
 import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
 import {
@@ -75,5 +76,15 @@ export class ProgramsController {
   })
   addProgramCourses(@Param('id') id: string, @Body() data: AddCoursesDto) {
     return this.programsService.addCourses(id, data);
+  }
+
+  @Post('import')
+  @Roles(['Admin'])
+  @SwaggerMethod({
+    ok: { type: ProgramDto },
+    notFound: {},
+  })
+  importPrograms(@UploadedFile() file: Express.Multer.File) {
+    // return this.programsService.addCourses(id, data);
   }
 }
