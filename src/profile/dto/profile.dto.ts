@@ -1,5 +1,4 @@
-import { Prisma } from '@prisma/client';
-import { FindManyQuery } from '../../types';
+import { profileQuery } from '../../common/queries';
 
 export class ProfileDto {
   id: string;
@@ -7,10 +6,7 @@ export class ProfileDto {
   middleName: string;
   lastName: string;
 
-  static readonly query: FindManyQuery<Prisma.ProfileDelegate> = {
-    id: true,
-    firstName: true,
-    middleName: true,
-    lastName: true,
-  };
+  get query() {
+    return profileQuery;
+  }
 }

@@ -1,21 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateStudentDto } from './dto/update-student.dto';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from '../prisma';
+import { FindStudentDto, StudentDto, StudentSimpleDto } from './dto';
+import { StudentNotFoundException } from './exceptions';
 
 @Injectable()
 export class StudentsService {
-  findAll() {
-    return `This action returns all students`;
+  constructor(private readonly prisma: PrismaService) {}
+
+  findByCondition(q: FindStudentDto) {
+    return this.prisma.student.findMany({
+      where: {
+        studentId: { contains: q.studentId },
+      },
+      select: StudentSimpleDto.query,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
+  findById(id: string) {
+    return this.findOne({ id });
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  async remove(id: string) {
+    await this.validateExist(id);
+
+    return this.prisma.student.delete({
+      where: { id },
+      select: StudentSimpleDto.query,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+  private async findOne(where: Prisma.StudentWhereUniqueInput) {
+    return this.prisma.student.findUnique({
+      where,
+      select: StudentDto.query,
+    });
+  }
+
+  private async validateExist(id: string): Promise<void> {
+    if (!(await this.findById(id))) {
+      throw new StudentNotFoundException(id);
+    }
   }
 }

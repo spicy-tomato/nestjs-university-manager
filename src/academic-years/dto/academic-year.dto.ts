@@ -1,5 +1,7 @@
-import { Prisma } from '@prisma/client';
-import { FindManyQuery } from '../../types';
+import {
+  academicYearQuery,
+  academicYearSimpleQuery,
+} from '../../common/queries';
 
 export class AcademicYearDto {
   id: string;
@@ -9,14 +11,9 @@ export class AcademicYearDto {
   endYear: number;
   isCurrent: boolean;
 
-  static readonly query: FindManyQuery<Prisma.AcademicYearDelegate> = {
-    id: true,
-    code: true,
-    name: true,
-    startYear: true,
-    endYear: true,
-    isCurrent: true,
-  };
+  static get query() {
+    return academicYearQuery;
+  }
 }
 
 export class AcademicYearSimpleDto {
@@ -24,9 +21,7 @@ export class AcademicYearSimpleDto {
   code: string;
   name: string;
 
-  static readonly query: FindManyQuery<Prisma.AcademicYearDelegate> = {
-    id: true,
-    code: true,
-    name: true,
-  };
+  static get query() {
+    return academicYearSimpleQuery;
+  }
 }

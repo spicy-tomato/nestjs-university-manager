@@ -1,28 +1,28 @@
-import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
-import { UpdateStudentDto } from './dto/update-student.dto';
+import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
+import { Roles, SwaggerClass } from '../common/decorators';
+import { FindStudentDto } from './dto';
 import { StudentsService } from './students.service';
 
 @Controller('students')
+@SwaggerClass({ tag: 'students' })
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
   @Get()
-  findAll() {
-    return this.studentsService.findAll();
+  @Roles(['Admin', 'Teacher'])
+  findStudentsByCondition(@Query() q: FindStudentDto) {
+    return this.studentsService.findByCondition(q);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.studentsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
-    return this.studentsService.update(+id, updateStudentDto);
+  @Roles(['Admin', 'Teacher'])
+  findOneStudent(@Param('id') id: string) {
+    return this.studentsService.findById(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.studentsService.remove(+id);
+  @Roles(['Admin'])
+  removeStudent(@Param('id') id: string) {
+    return this.studentsService.remove(id);
   }
 }
