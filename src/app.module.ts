@@ -13,6 +13,7 @@ import { CoursesModule } from './courses/courses.module';
 import { ManagementClassesModule } from './management-classes/management-classes.module';
 import { PrismaModule } from './prisma';
 import { ProgramsModule } from './programs/programs.module';
+import { ScoresModule } from './scores/students.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { StudentsModule } from './students/students.module';
 import { TeachersModule } from './teachers/teachers.module';
@@ -42,10 +43,11 @@ import { UsersModule } from './users/users.module';
     CoursesModule,
     ManagementClassesModule,
     ProgramsModule,
+    ScoresModule,
     SessionsModule,
-    UsersModule,
     StudentsModule,
     TeachersModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [

@@ -150,3 +150,9 @@ export const teacherSimpleQuery: FindManyQuery<Prisma.TeacherDelegate> = {
   teacherId: true,
   profile: { select: profileQuery },
 };
+
+export const scoreQuery: FindManyQuery<Prisma.ScoreDelegate> = {
+  id: true,
+  score: true,
+  courseClassId: true,
+};

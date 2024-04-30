@@ -1,6 +1,12 @@
 import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
 import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
-import { FindStudentDto, StudentDto, StudentSimpleDto } from './dto';
+import { FindScoreQuery } from '../scores/queries';
+import {
+  FindStudentDto,
+  StudentDto,
+  StudentScoreDto,
+  StudentSimpleDto,
+} from './dto';
 import { StudentsService } from './students.service';
 
 @Controller('students')
@@ -30,5 +36,14 @@ export class StudentsController {
   })
   removeStudent(@Param('id') id: string) {
     return this.studentsService.remove(id);
+  }
+
+  @Get(':id/scores')
+  @SwaggerMethod({
+    ok: { type: StudentScoreDto, isArray: true },
+    notFound: {},
+  })
+  getStudentScores(@Param('id') id: string, @Query() q: FindScoreQuery) {
+    return this.studentsService.getScores(id, q);
   }
 }

@@ -53,6 +53,10 @@ export class CreateCourseClassDto {
   @IsMongoId()
   courseId: string;
 
+  @IsNotEmpty()
+  @IsMongoId()
+  academicYearId: string;
+
   @ValidateIf((o) => !!o.teacherId)
   @IsMongoId()
   teacherId: string;

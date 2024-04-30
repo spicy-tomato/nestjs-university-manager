@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
 import { SessionListItemDto } from '../sessions/dto/session.dto';
-import { StudentScoreDto, StudentSimpleDto } from '../students/dto';
+import { StudentScoreListItemDto, StudentSimpleDto } from '../students/dto';
 import { CourseClassesService } from './course-classes.service';
 import {
   CourseClassDto,
@@ -77,7 +77,7 @@ export class CourseClassesController {
   @Get(':id/scores')
   @Roles(['Admin', 'Teacher'])
   @SwaggerMethod({
-    ok: { type: StudentScoreDto, isArray: true },
+    ok: { type: StudentScoreListItemDto, isArray: true },
     notFound: {},
   })
   getCourseClassScores(@Param('id') id: string) {
@@ -87,7 +87,7 @@ export class CourseClassesController {
   @Put(':id/scores')
   @Roles(['Admin'])
   @SwaggerMethod({
-    ok: { type: StudentScoreDto, isArray: true },
+    ok: { type: StudentScoreListItemDto, isArray: true },
     notFound: {},
   })
   updateCourseClassScores(
