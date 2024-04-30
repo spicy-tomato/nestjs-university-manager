@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import ObjectID from 'bson-objectid';
 import { difference, keyBy, sortBy } from 'lodash';
 import { Duration } from 'luxon';
+import { AcademicYearsService } from '../academic-years/academic-years.service';
 import { DateHelper } from '../common/helpers';
 import { CourseNotFoundException } from '../courses/exceptions';
 import { PrismaService } from '../prisma';
@@ -24,7 +25,10 @@ import {
 
 @Injectable()
 export class CourseClassesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly academicYearsService: AcademicYearsService,
+  ) {}
 
   async create(data: CreateCourseClassDto) {
     if (await this.findOne({ code: data.code })) {
@@ -32,6 +36,9 @@ export class CourseClassesService {
     }
 
     await this.validateCourseId(data.courseId);
+    const currentAcademicYear =
+      (await this.academicYearsService.getCurrent()) ??
+      (await this.academicYearsService.findInRange())[0];
 
     const id = ObjectID().toHexString();
 
@@ -52,6 +59,7 @@ export class CourseClassesService {
       await tx.courseClass.create({
         data: {
           id,
+          academicYearId: currentAcademicYear.id,
           ...data,
         },
         select: CourseClassListItemDto.query,
