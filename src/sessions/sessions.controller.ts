@@ -1,7 +1,16 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { JwtUser, SwaggerClass, SwaggerMethod } from '../common/decorators';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  ChangeSessionRequestDto,
+  CreateChangeSessionRequestDto,
+} from '../change-session-requests/dto';
+import {
+  JwtUser,
+  Roles,
+  SwaggerClass,
+  SwaggerMethod,
+} from '../common/decorators';
 import { JwtUserDto } from './../common/dto/jwt-user.dto';
-import { FindSessionDto, SessionListItemDto } from './dto';
+import { FindSessionDto, SessionDto, SessionListItemDto } from './dto';
 import { SessionsService } from './sessions.service';
 
 @Controller('sessions')
@@ -19,8 +28,18 @@ export class SessionsController {
   }
 
   @Get(':id')
-  @SwaggerMethod({ ok: { type: SessionListItemDto, isNullable: true } })
+  @SwaggerMethod({ ok: { type: SessionDto, isNullable: true } })
   findOneSession(@Param('id') id: string, @JwtUser() user: JwtUserDto) {
     return this.sessionsService.findOne(id, user.role, user.sub);
+  }
+
+  @Post(':id/change')
+  @Roles(['Teacher'])
+  @SwaggerMethod({ ok: { type: ChangeSessionRequestDto, isNullable: true } })
+  createChangeRequest(
+    @Param('id') id: string,
+    @Body() data: CreateChangeSessionRequestDto,
+  ) {
+    return this.sessionsService.createChangeRequest(id, data);
   }
 }

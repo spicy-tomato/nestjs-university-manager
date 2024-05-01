@@ -40,7 +40,10 @@ export class StudentsService {
     });
   }
 
-  async getScores(studentId: string, q: FindScoreQuery): Promise<StudentScoreDto[]> {
+  async getScores(
+    studentId: string,
+    q: FindScoreQuery,
+  ): Promise<StudentScoreDto[]> {
     return this.scoreService.findByStudentId(studentId, q);
   }
 

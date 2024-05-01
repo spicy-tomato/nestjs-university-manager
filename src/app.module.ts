@@ -18,6 +18,7 @@ import { SessionsModule } from './sessions/sessions.module';
 import { StudentsModule } from './students/students.module';
 import { TeachersModule } from './teachers/teachers.module';
 import { UsersModule } from './users/users.module';
+import { ChangeSessionRequestsModule } from './change-session-requests/change-session-requests.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { UsersModule } from './users/users.module';
     PassportModule,
     AcademicYearsModule,
     AuthModule,
+    ChangeSessionRequestsModule,
     CourseClassesModule,
     CoursesModule,
     ManagementClassesModule,

@@ -8,7 +8,6 @@ function extendClient(base: PrismaClient) {
       models: {
         Program: true,
         Course: true,
-        ChangeSessionRequest: true,
       },
       defaultConfig: {
         field: 'deletedAt',

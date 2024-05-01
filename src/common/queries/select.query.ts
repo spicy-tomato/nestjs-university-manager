@@ -124,19 +124,32 @@ export const teacherQuery: FindManyQuery<Prisma.TeacherDelegate> = {
   courseClasses: { select: courseClassListItemQuery },
 };
 
+export const sessionListItemQuery: FindManyQuery<Prisma.SessionDelegate> = {
+  id: true,
+  startAt: true,
+  endAt: true,
+  courseClass: { select: courseClassListItemQuery },
+};
+
+export const changeSessionRequestQuery: FindManyQuery<Prisma.ChangeSessionRequestDelegate> =
+  {
+    id: true,
+    session: { select: sessionListItemQuery },
+    status: true,
+    substituteTeacher: { select: teacherSimpleQuery },
+    oldStartAt: true,
+    oldEndAt: true,
+    newStartAt: true,
+    newEndAt: true,
+  };
+
 export const sessionQuery: FindManyQuery<Prisma.SessionDelegate> = {
   id: true,
   startAt: true,
   endAt: true,
   courseClass: { select: courseClassListItemQuery },
   substituteTeacher: { select: teacherSimpleQuery },
-};
-
-export const sessionListItemQuery: FindManyQuery<Prisma.SessionDelegate> = {
-  id: true,
-  startAt: true,
-  endAt: true,
-  courseClass: { select: courseClassListItemQuery },
+  changeSessionRequests: { select: changeSessionRequestQuery },
 };
 
 export const scoreQuery: FindManyQuery<Prisma.ScoreDelegate> = {

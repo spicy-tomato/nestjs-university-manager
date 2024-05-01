@@ -117,24 +117,28 @@ model CourseClass {
 }
 
 model Session {
-  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
-  courseClass         CourseClass @relation(fields: [courseClassId], references: [id])
-  courseClassId       String      @db.ObjectId
-  startAt             DateTime
-  endAt               DateTime
-  substituteTeacher   Teacher?    @relation(fields: [substituteTeacherId], references: [id])
-  substituteTeacherId String?     @db.ObjectId
+  id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
+  courseClass           CourseClass            @relation(fields: [courseClassId], references: [id])
+  courseClassId         String                 @db.ObjectId
+  startAt               DateTime
+  endAt                 DateTime
+  substituteTeacher     Teacher?               @relation(fields: [substituteTeacherId], references: [id])
+  substituteTeacherId   String?                @db.ObjectId
+  changeSessionRequests ChangeSessionRequest[]
 }
 
 model ChangeSessionRequest {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  oldStartAt  DateTime
-  oldEndAt    DateTime
-  newStartAt  DateTime
-  newEndAt    DateTime
-  createdAt   DateTime @default(now())
-  createdBy   Teacher  @relation(fields: [createdById], references: [id])
-  createdById String   @db.ObjectId
+  id                  String                     @id @default(auto()) @map("_id") @db.ObjectId
+  oldStartAt          DateTime
+  oldEndAt            DateTime
+  newStartAt          DateTime
+  newEndAt            DateTime
+  status              ChangeSessionRequestStatus
+  createdAt           DateTime                   @default(now())
+  substituteTeacher   Teacher?                   @relation(fields: [substituteTeacherId], references: [id])
+  substituteTeacherId String?                    @db.ObjectId
+  session             Session                    @relation(fields: [sessionId], references: [id])
+  sessionId           String                     @db.ObjectId
 }
 
 model Score {
