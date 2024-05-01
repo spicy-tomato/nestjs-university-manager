@@ -6,6 +6,7 @@ import {
 } from '../../common/queries';
 import { CourseListItemDto } from '../../courses/dto';
 import { StudentSimpleDto } from '../../students/dto';
+import { TeacherSimpleDto } from '../../teachers/dto';
 import { CreateCourseClassSlotDto } from './create-course-class.dto';
 
 export class CourseClassSlotDto {
@@ -34,6 +35,8 @@ export class CourseClassDto {
 export class CourseClassListItemDto extends OmitType(CourseClassDto, [
   'students',
 ]) {
+  teacher: TeacherSimpleDto;
+
   static get query() {
     return courseClassListItemQuery;
   }

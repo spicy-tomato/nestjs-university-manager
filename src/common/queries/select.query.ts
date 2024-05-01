@@ -98,45 +98,24 @@ export const courseClassQuery: FindManyQuery<Prisma.CourseClassDelegate> = {
   students: { select: studentSimpleQuery },
 };
 
+export const teacherSimpleQuery: FindManyQuery<Prisma.TeacherDelegate> = {
+  id: true,
+  teacherId: true,
+  profile: { select: profileQuery },
+};
+
 export const courseClassListItemQuery: FindManyQuery<Prisma.CourseClassDelegate> =
   {
     id: true,
     code: true,
     name: true,
     course: { select: courseListItemQuery },
-    teacher: {
-      select: {
-        id: true,
-        teacherId: true,
-        profile: { select: profileQuery },
-      },
-    },
+    teacher: { select: teacherSimpleQuery },
     startAt: true,
     endAt: true,
     sessionCount: true,
     isoSlots: true,
   };
-
-export const sessionQuery: FindManyQuery<Prisma.SessionDelegate> = {
-  id: true,
-  startAt: true,
-  endAt: true,
-  courseClass: { select: courseClassListItemQuery },
-  substituteTeacher: {
-    select: {
-      id: true,
-      teacherId: true,
-      profile: { select: profileQuery },
-    },
-  },
-};
-
-export const sessionListItemQuery: FindManyQuery<Prisma.SessionDelegate> = {
-  id: true,
-  startAt: true,
-  endAt: true,
-  courseClass: { select: courseClassListItemQuery },
-};
 
 export const teacherQuery: FindManyQuery<Prisma.TeacherDelegate> = {
   id: true,
@@ -145,10 +124,19 @@ export const teacherQuery: FindManyQuery<Prisma.TeacherDelegate> = {
   courseClasses: { select: courseClassListItemQuery },
 };
 
-export const teacherSimpleQuery: FindManyQuery<Prisma.TeacherDelegate> = {
+export const sessionQuery: FindManyQuery<Prisma.SessionDelegate> = {
   id: true,
-  teacherId: true,
-  profile: { select: profileQuery },
+  startAt: true,
+  endAt: true,
+  courseClass: { select: courseClassListItemQuery },
+  substituteTeacher: { select: teacherSimpleQuery },
+};
+
+export const sessionListItemQuery: FindManyQuery<Prisma.SessionDelegate> = {
+  id: true,
+  startAt: true,
+  endAt: true,
+  courseClass: { select: courseClassListItemQuery },
 };
 
 export const scoreQuery: FindManyQuery<Prisma.ScoreDelegate> = {

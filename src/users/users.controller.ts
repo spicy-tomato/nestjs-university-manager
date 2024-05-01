@@ -28,7 +28,7 @@ export class UsersController {
 
   @Get('me')
   @SwaggerMethod({ ok: { type: JwtUserDto } })
-  getUserProfile(@Req() req: Request) {
-    return this.usersService.findById((req.user as { id: string }).id);
+  getUserProfile(@JwtUser() user: JwtUserDto) {
+    return this.usersService.findById(user.sub);
   }
 }
