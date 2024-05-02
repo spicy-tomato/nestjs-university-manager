@@ -46,13 +46,6 @@ export class UsersService {
     const hashPassword = await hash(data.password, salt);
     data.password = hashPassword;
 
-    const studentCreate = {
-      studentId: data.profile!.student!.studentId,
-      managementClassId: data.profile!.student!.managementClassId,
-    };
-
-    const teacherCreate = { teacherId: data.profile!.teacher!.teacherId };
-
     return this.prisma.user.create({
       data: {
         email: data.email,
@@ -68,9 +61,19 @@ export class UsersService {
             isMale: data.profile.isMale,
             address: data.profile.address,
             student:
-              data.role === 'Student' ? { create: studentCreate } : undefined,
+              data.role === 'Student'
+                ? {
+                    create: {
+                      studentId: data.profile!.student!.studentId,
+                      managementClassId:
+                        data.profile!.student!.managementClassId,
+                    },
+                  }
+                : undefined,
             teacher:
-              data.role === 'Teacher' ? { create: teacherCreate } : undefined,
+              data.role === 'Teacher'
+                ? { create: { teacherId: data.profile!.teacher!.teacherId } }
+                : undefined,
           },
         },
       },
@@ -165,6 +168,7 @@ export class UsersService {
     studentId,
     managementClassId,
   }: CreateUserProfileStudentDto) {
+    console.log(studentId, managementClassId);
     if (
       await this.prisma.student.findFirst({
         where: { studentId },
@@ -177,7 +181,6 @@ export class UsersService {
     if (
       !(await this.prisma.managementClass.findFirst({
         where: { id: managementClassId },
-        select: null,
       }))
     ) {
       throw new ManagementClassNotFoundException(managementClassId);

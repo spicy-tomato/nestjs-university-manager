@@ -39,6 +39,7 @@ export class CreateUserProfileDto {
   @IsNotEmpty()
   lastName: string;
 
+  @ValidateIf((o) => !!o.phoneNumber)
   @IsString()
   @IsMobilePhone()
   phoneNumber?: string | null;
@@ -74,5 +75,5 @@ export class CreateUserDto {
 
   @ValidateNested()
   @Type(() => CreateUserProfileDto)
-  profile?: CreateUserProfileDto;
+  profile: CreateUserProfileDto;
 }
