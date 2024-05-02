@@ -1,5 +1,5 @@
 import { OmitType } from '@nestjs/swagger';
-import { profileQuery, programListItemQuery } from '../../common/queries';
+import { programListItemQuery, programQuery } from '../../common/queries';
 import { CourseListItemDto } from '../../courses/dto';
 import { ManagementClassListItemDto } from '../../management-classes/dto';
 
@@ -12,7 +12,7 @@ export class ProgramDto {
   managementClass: ManagementClassListItemDto[];
 
   static get query() {
-    return profileQuery;
+    return programQuery;
   }
 }
 
