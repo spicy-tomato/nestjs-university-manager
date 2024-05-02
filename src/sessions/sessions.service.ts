@@ -32,6 +32,7 @@ export class SessionsService {
     }
 
     if (role === 'Teacher') {
+      console.log(userId);
       const teacher = await this.prisma.teacher.findFirst({
         where: { profile: { userId } },
       });

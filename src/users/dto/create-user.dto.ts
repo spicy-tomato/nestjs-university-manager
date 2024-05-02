@@ -1,9 +1,9 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEmail,
-  IsEnum,
   IsMobilePhone,
   IsMongoId,
   IsNotEmpty,
@@ -70,7 +70,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @IsEnum(Role)
+  @ApiProperty({ enum: Role, enumName: 'Role' })
   role: Role;
 
   @ValidateNested()

@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ChangeSessionRequestsService } from './change-session-requests.service';
+import { PrismaModule } from '../prisma';
 import { ChangeSessionRequestsController } from './change-session-requests.controller';
+import { ChangeSessionRequestsService } from './change-session-requests.service';
 
 @Module({
-  controllers: [ChangeSessionRequestsController],
+  imports: [PrismaModule],
   providers: [ChangeSessionRequestsService],
+  controllers: [ChangeSessionRequestsController],
+  exports: [ChangeSessionRequestsService],
 })
 export class ChangeSessionRequestsModule {}
