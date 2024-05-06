@@ -85,7 +85,7 @@ export class CourseClassesController {
   }
 
   @Put(':id/scores')
-  @Roles(['Admin'])
+  @Roles(['Teacher'])
   @SwaggerMethod({
     ok: { type: StudentScoreListItemDto, isArray: true },
     notFound: {},

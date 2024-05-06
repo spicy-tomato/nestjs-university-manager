@@ -1,8 +1,11 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
 import { ChangeSessionRequestsService } from './change-session-requests.service';
-import { ChangeSessionRequestDto } from './dto';
-import { UpdateChangeSessionRequestDto } from './dto/update-change-session-request.dto';
+import {
+  ChangeSessionRequestDto,
+  FindChangeSessionRequestDto,
+  UpdateChangeSessionRequestDto,
+} from './dto';
 
 @Controller('change-session-requests')
 @SwaggerClass({ tag: 'change-session-requests' })
@@ -11,10 +14,12 @@ export class ChangeSessionRequestsController {
     private readonly changeSessionRequestsService: ChangeSessionRequestsService,
   ) {}
 
-  // @Get()
-  // findRequestsByCondition() {
-  //   return this.changeSessionRequestsService.findByCondition();
-  // }
+  @Get()
+  @Roles(['Admin'])
+  @SwaggerMethod({ ok: { type: ChangeSessionRequestDto, isArray: true } })
+  findRequestsByCondition(@Query() q: FindChangeSessionRequestDto) {
+    return this.changeSessionRequestsService.findByCondition(q);
+  }
 
   // @Get(':id')
   // findOneRequest(@Param('id') id: string) {
@@ -24,7 +29,7 @@ export class ChangeSessionRequestsController {
   @Patch(':id')
   @Roles(['Teacher'])
   @SwaggerMethod({
-    created: { type: ChangeSessionRequestDto },
+    ok: { type: ChangeSessionRequestDto },
     badRequest: {},
     notFound: {},
   })
@@ -38,7 +43,7 @@ export class ChangeSessionRequestsController {
   @Patch(':id/approve')
   @Roles(['Admin'])
   @SwaggerMethod({
-    created: { type: ChangeSessionRequestDto },
+    ok: { type: ChangeSessionRequestDto },
     badRequest: {},
     notFound: {},
   })
@@ -49,7 +54,7 @@ export class ChangeSessionRequestsController {
   @Patch(':id/cancel')
   @Roles(['Teacher'])
   @SwaggerMethod({
-    created: { type: ChangeSessionRequestDto },
+    ok: { type: ChangeSessionRequestDto },
     badRequest: {},
     notFound: {},
   })
@@ -60,7 +65,7 @@ export class ChangeSessionRequestsController {
   @Patch(':id/reject')
   @Roles(['Admin'])
   @SwaggerMethod({
-    created: { type: ChangeSessionRequestDto },
+    ok: { type: ChangeSessionRequestDto },
     badRequest: {},
     notFound: {},
   })

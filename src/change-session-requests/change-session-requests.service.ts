@@ -1,16 +1,29 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma';
-import { ChangeSessionRequestDto } from './dto';
-import { UpdateChangeSessionRequestDto } from './dto/update-change-session-request.dto';
+import {
+  ChangeSessionRequestDto,
+  FindChangeSessionRequestDto,
+  UpdateChangeSessionRequestDto,
+} from './dto';
 import { ChangeSessionRequestNotFoundException } from './exceptions';
 
 @Injectable()
 export class ChangeSessionRequestsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findByCondition() {
-    return `This action returns all changeSessionRequests`;
+  findByCondition(q: FindChangeSessionRequestDto) {
+    return this.prisma.changeSessionRequest.findMany({
+      where: {
+        substituteTeacherId: q.substituteTeacherId,
+        createdAt: {
+          gte: q.from,
+          lte: q.to,
+        },
+      },
+      select: ChangeSessionRequestDto.query,
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
   findById(id: string) {
