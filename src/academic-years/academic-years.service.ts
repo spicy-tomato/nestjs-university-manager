@@ -55,13 +55,13 @@ export class AcademicYearsService {
 
     await this.prisma.$transaction(async (tx) => {
       if (current) {
-        await this.prisma.academicYear.update({
+        await tx.academicYear.update({
           data: { isCurrent: false },
           where: { id: current.id },
         });
       }
 
-      await this.prisma.academicYear.update({
+      await tx.academicYear.update({
         data: { isCurrent: true },
         where: { id },
         select: AcademicYearDto.query,
