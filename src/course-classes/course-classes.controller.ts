@@ -9,7 +9,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { Roles, SwaggerClass, SwaggerMethod } from '../common/decorators';
+import {
+  JwtUser,
+  Roles,
+  SwaggerClass,
+  SwaggerMethod,
+} from '../common/decorators';
+import { JwtUserDto } from '../common/dto';
 import { SessionListItemDto } from '../sessions/dto/session.dto';
 import { StudentScoreListItemDto, StudentSimpleDto } from '../students/dto';
 import { CourseClassesService } from './course-classes.service';
@@ -40,8 +46,11 @@ export class CourseClassesController {
 
   @Get()
   @SwaggerMethod({ ok: { type: CourseClassListItemDto, isArray: true } })
-  findCourseClassByCondition(@Query() q: FindCourseClassDto) {
-    return this.courseClassesService.findByCondition(q);
+  findCourseClassByCondition(
+    @Query() q: FindCourseClassDto,
+    @JwtUser() user: JwtUserDto,
+  ) {
+    return this.courseClassesService.findByCondition(q, user.role, user.sub);
   }
 
   @Get(':id')

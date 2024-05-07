@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import ObjectID from 'bson-objectid';
 import { difference, keyBy, sortBy } from 'lodash';
 import { Duration } from 'luxon';
@@ -71,11 +71,42 @@ export class CourseClassesService {
     return this.findById(id);
   }
 
-  findByCondition(q: FindCourseClassDto) {
+  async findByCondition(q: FindCourseClassDto, role: Role, userId: string) {
+    if (role === 'Admin') {
+      return this.prisma.courseClass.findMany({
+        where: {
+          code: { contains: q.code },
+          name: { contains: q.name },
+        },
+        select: CourseClassListItemDto.query,
+      });
+    }
+
+    if (role === 'Teacher') {
+      const teacher = await this.prisma.teacher.findFirst({
+        where: { profile: { userId } },
+        select: { id: true },
+      });
+      return this.prisma.courseClass.findMany({
+        where: {
+          code: { contains: q.code },
+          name: { contains: q.name },
+          teacherId: teacher?.id,
+        },
+        select: CourseClassListItemDto.query,
+      });
+    }
+
+    const student = await this.prisma.student.findFirst({
+      where: { profile: { userId } },
+      select: { id: true },
+    });
+
     return this.prisma.courseClass.findMany({
       where: {
         code: { contains: q.code },
         name: { contains: q.name },
+        studentIds: { has: student?.id },
       },
       select: CourseClassListItemDto.query,
     });
